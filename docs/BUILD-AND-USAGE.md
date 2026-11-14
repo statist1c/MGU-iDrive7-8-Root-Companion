@@ -1,3 +1,5 @@
+Current release: **v0.8.0 pre-release**, versionCode6, selected adaptive shield icon. Use GitHub tag v0.8.0 and mark as a pre-release. Earlier release notes below are historical.
+
 Current release: **v0.7.0 pre-release**, versionCode5. Settings action buttons now match the main app in both themes. Use tag v0.7.0 and mark as a pre-release. Older version instructions below are historical.
 
 Current release: **v0.6.0 pre-release**, versionCode4. See [adapter guide](WIFI-ADAPTER.md). Use GitHub tag v0.6.0 and mark the release as a pre-release. The earlier release documentation below remains historical.

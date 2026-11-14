@@ -1,3 +1,5 @@
+Current version: [v0.8.0 validation](VALIDATION-v0.8.0.md).
+
 Current version: [v0.7.0 validation](VALIDATION-v0.7.0.md).
 
 Current version: [v0.6.0 validation](VALIDATION-v0.6.0.md).

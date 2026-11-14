@@ -14,3 +14,7 @@ This archive contains the application source, Gradle wrapper and pinned upstream
 - Android connected-device foreground service requirements: https://developer.android.com/develop/background-work/services/fgs/service-types#connected-device .
 
 Dependency versions are source configuration choices, not a successful build or security certification. See `README.md` and `VALIDATION.md` for unresolved integration/security checks and the blocked APK build.
+
+## v0.8.0 launcher artwork
+
+Shield icon generated for this project at the user’s request. The embedded BMW roundel/name remain third-party marks of BMW AG; no endorsement, permission or trademark license is claimed. The project source license does not grant rights to those marks.

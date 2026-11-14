@@ -2,7 +2,7 @@
 
 An experimental, self-contained **Android version of [idrive7-8-ssh-root](https://github.com/cauliflowermossgrape/idrive7-8-ssh-root)** for BMW MGU iDrive 7/8 head units over USB Ethernet or experimental Wi-Fi ENET.
 
-**v0.7.0 pre-release**
+**v0.8.0 pre-release**
 
 ## Full credits
 
@@ -39,7 +39,7 @@ This project is an Android adaptation of the author's work, adding a phone inter
 3. Run **Check compatibility & read VIN** first and verify the VIN physically.
 4. Read the warnings and verify a restorable coding backup before considering any flash.
 
-See [adapter setup and identity limitations](docs/WIFI-ADAPTER.md). Standard USB-C Ethernet support remains available. The app icon now includes BMW MGU text.
+See [adapter setup and identity limitations](docs/WIFI-ADAPTER.md). Standard USB-C Ethernet support remains available. The app uses the selected shield/chip icon with MGU lettering and a BMW roundel. This independent project is not affiliated with or endorsed by BMW; third-party marks are not covered by the project source license.
 
 <img src="docs/images/icon.png" alt="BMW MGU companion icon" width="108" />
 

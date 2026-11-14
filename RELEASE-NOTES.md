@@ -1,14 +1,14 @@
-# v0.7.0 — Pre-release
+# v0.8.0 — Pre-release
 
-- Updated Settings → Done to the same filled, rounded primary-button style used throughout the app.
-- Updated Open Android Wi-Fi settings to the matching outlined secondary-button style.
-- Matched typography, sentence case, spacing, 48dp minimum height and pressed/disabled colors in both Light and Dark modes; Auto follows the system theme.
-- VersionCode5; versionName0.7.0-pre-release. Existing package and signing identity retained.
+- Replaced the launcher icon with the user-selected shield/microchip design, unlocked terminal, MGU lettering and BMW roundel.
+- Added Android adaptive-icon packaging with safe margins for round and rounded-square launcher masks.
+- Retained v0.7.0 settings button styling, themes, USB-C Ethernet and experimental Wi-Fi ENET profiles.
+- VersionCode6 / versionName0.8.0-pre-release, existing package and signing identity retained.
 
-USB-C Ethernet, experimental VXSCAN/MHD ENET Wi-Fi support and the BMW MGU icon are retained. Connection behavior and authorization safeguards are unchanged.
+No connectivity or rooting workflow changes. No physical phone, adapter or real BMW head unit validation is claimed. Wi-Fi interoperability and SSH forwarding remain unverified.
 
-No physical phone, adapter or real BMW head unit testing is claimed. Wi-Fi interoperability and SSH forwarding remain unverified.
+Full credit for the original rooting work: https://github.com/cauliflowermossgrape/idrive7-8-ssh-root . This is an independent Android adaptation.
 
-Full credit for the original rooting work: https://github.com/cauliflowermossgrape/idrive7-8-ssh-root . This project is an Android adaptation.
+BMW name and roundel are third-party trademarks; no BMW endorsement or permission is claimed. Their inclusion does not grant trademark rights, and the project license does not license them.
 
-Publish using GitHub tag v0.7.0 and Set as a pre-release enabled.
+Publish with GitHub tag v0.8.0 and Set as a pre-release enabled.

@@ -1,0 +1,11 @@
+**/build/
+**/.gradle/
+**/__pycache__/
+**/*.pyc
+**/local.properties
+**/*.jks
+**/*.keystore
+**/key.properties
+**/signing.properties
+vendor/upstream/data/logs/
+vendor/upstream/data/enrollments/

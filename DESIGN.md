@@ -13,3 +13,7 @@ This is a UI/name update to the existing self-contained MGU app. It does not add
 The underlying application ID and signing identity remain the same as v0.3. The diagnostic backend, guarded request coordinator, SSH adapter and Ethernet/root helpers are unchanged. Tab changes do not reset connection/VIN/variant inputs or cancel active work; operation controls are locked during a running job.
 
 User data remains protected by private storage, disabled app backups and the secure-window flag. Emulator screenshots for design review temporarily cleared the secure-window flag only within the separately installed test instrumentation. Production startup still sets it.
+
+## v0.8.0 icon
+
+User selected a newly generated shield/microchip icon with unlocked terminal, cyan/blue/red accent stripes and MGU lettering, then requested an embedded BMW roundel. Packaged as opaque raster artwork with Android adaptive foreground/background layers and 22% layer insets. Original reference app assets were not used.
