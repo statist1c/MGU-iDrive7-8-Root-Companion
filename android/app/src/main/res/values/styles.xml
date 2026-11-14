@@ -1,0 +1,11 @@
+<resources>
+    <style name="Theme.RootCompanion" parent="android:style/Theme.Material.Light.NoActionBar">
+        <item name="android:fontFamily">sans</item>
+        <item name="android:colorAccent">#30477F</item>
+        <item name="android:windowLightStatusBar">true</item>
+        <item name="android:statusBarColor">#FAF8FF</item>
+        <item name="android:navigationBarColor">#EFEDF5</item>
+        <item name="android:windowBackground">#FAF8FF</item>
+        <item name="android:windowSoftInputMode">stateAlwaysHidden|adjustResize</item>
+    </style>
+</resources>

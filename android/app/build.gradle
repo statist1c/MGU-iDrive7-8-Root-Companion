@@ -1,0 +1,39 @@
+plugins { id 'com.android.application'; id 'com.chaquo.python' }
+android {
+    namespace 'dev.mgu.standalone'
+    compileSdk 35
+    defaultConfig {
+        applicationId 'dev.mgu.standalone'
+        minSdk 26; targetSdk 35; versionCode 2; versionName '0.4.0-experimental'
+        ndk { abiFilters 'arm64-v8a', 'x86_64' }
+        testInstrumentationRunner 'dev.mgu.standalone.RuntimeSmokeTest'
+    }
+    compileOptions { sourceCompatibility JavaVersion.VERSION_1_8; targetCompatibility JavaVersion.VERSION_1_8 }
+    sourceSets.main.assets.srcDir layout.buildDirectory.dir('generated/backendAssets')
+    packaging { resources { excludes += ['META-INF/versions/**', 'META-INF/*.SF', 'META-INF/*.RSA', 'META-INF/*.DSA'] } }
+}
+chaquopy {
+    defaultConfig {
+        version = '3.13'
+        if (project.hasProperty('standaloneBuildPython')) {
+            buildPython(project.property('standaloneBuildPython').toString())
+        }
+        // Install Python 3.13 on the build computer. The app embeds its own runtime.
+        pip { install 'cryptography==42.0.8' }
+    }
+}
+dependencies {
+    implementation 'com.github.mwiede:jsch:2.28.8'
+    implementation 'org.bouncycastle:bcprov-jdk18on:1.87'
+}
+tasks.register('packageBackend', Zip) {
+    from(rootProject.file('../vendor/upstream')) {
+        include 'ssh_enable.py', 'sshd-always-on.sh', 'mgu7/**', 'data/assets/**', 'LICENSE'
+        exclude '**/__pycache__/**', '**/*.pyc'
+    }
+    archiveFileName = 'backend.zip'
+    destinationDirectory = layout.buildDirectory.dir('generated/backendAssets')
+    preserveFileTimestamps = false
+    reproducibleFileOrder = true
+}
+tasks.named('preBuild').configure { dependsOn 'packageBackend' }
