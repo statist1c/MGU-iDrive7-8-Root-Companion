@@ -2,7 +2,7 @@
 
 An experimental, self-contained **Android version of [idrive7-8-ssh-root](https://github.com/cauliflowermossgrape/idrive7-8-ssh-root)** for BMW MGU iDrive 7/8 head units over USB Ethernet or experimental Wi-Fi ENET.
 
-**v0.6.0 pre-release**
+**v0.7.0 pre-release**
 
 ## Full credits
 

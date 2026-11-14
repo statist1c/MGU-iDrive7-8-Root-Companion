@@ -15,7 +15,7 @@ public final class SettingsActivity extends Activity {
   if(android.os.Build.VERSION.SDK_INT>=30)getWindow().setDecorFitsSystemWindows(false);
   scroll.setOnApplyWindowInsetsListener((v,insets)->{if(android.os.Build.VERSION.SDK_INT>=30){android.graphics.Insets bars=insets.getInsets(WindowInsets.Type.systemBars()|WindowInsets.Type.displayCutout());scroll.setPadding(bars.left,bars.top,bars.right,bars.bottom);}else scroll.setPadding(insets.getSystemWindowInsetLeft(),insets.getSystemWindowInsetTop(),insets.getSystemWindowInsetRight(),insets.getSystemWindowInsetBottom());return insets;});scroll.requestApplyInsets();
   TextView title=new TextView(this);title.setText("App settings");title.setTextSize(26);title.setTextColor(ink);box.addView(title);
-  Button back=new Button(this);back.setText("Done");box.addView(back);back.setOnClickListener(v->finish());
+  Button back=new Button(this);back.setText("Done");styleButton(back,dark,true);box.addView(back);back.setOnClickListener(v->finish());
   TextView label=new TextView(this);label.setText("Appearance");label.setTextSize(20);label.setTextColor(ink);box.addView(label);
   RadioGroup themes=new RadioGroup(this);box.addView(themes);styleGroup(themes,dark,pad);String[] keys={"auto","light","dark"},names={"Auto · follow phone theme","Light","Dark"};
   for(int i=0;i<3;i++){RadioButton r=new RadioButton(this);r.setId(View.generateViewId());r.setText(names[i]);themes.addView(r);r.setChecked(AppSettings.prefs(this).getString("theme","auto").equals(keys[i]));final String key=keys[i];r.setOnClickListener(v->{AppSettings.prefs(this).edit().putString("theme",key).apply();recreate();});}
@@ -26,7 +26,16 @@ public final class SettingsActivity extends Activity {
   EditText ssh=new EditText(this);ssh.setSingleLine(true);ssh.setHint("Optional Wi-Fi SSH IPv4 override");ssh.setText(AppSettings.prefs(this).getString("ssh_override",""));ssh.setEnabled(!BackendService.running);box.addView(ssh);
   TextView error=new TextView(this);error.setTextColor(ink);box.addView(error);
   back.setOnClickListener(v->{String ip=ssh.getText().toString().trim();if(!ip.isEmpty()&&!EthernetRoute.local(ip)){error.setText("Use a private or usable link-local IPv4 address.");return;}if(!BackendService.running)AppSettings.prefs(this).edit().putString("ssh_override",ip).apply();finish();});
-  Button wifi=new Button(this);wifi.setText("Open Android Wi-Fi settings");box.addView(wifi);wifi.setOnClickListener(v->startActivity(new Intent(Settings.ACTION_WIFI_SETTINGS)));
+  Button wifi=new Button(this);wifi.setText("Open Android Wi-Fi settings");styleButton(wifi,dark,false);box.addView(wifi);wifi.setOnClickListener(v->startActivity(new Intent(Settings.ACTION_WIFI_SETTINGS)));
+ }
+ private int dp(float value){return Math.round(value*getResources().getDisplayMetrics().density);}
+ private android.graphics.drawable.GradientDrawable buttonShape(int fill,int stroke){android.graphics.drawable.GradientDrawable d=new android.graphics.drawable.GradientDrawable();d.setColor(fill);d.setCornerRadius(dp(24));if(stroke!=0)d.setStroke(dp(1),stroke);return d;}
+ private void styleButton(Button b,boolean dark,boolean solid){
+  int blue=dark?0xFFAFC3FF:0xFF30477F,pale=dark?0xFF28385B:0xFFDFE5F6,muted=dark?0xFFB1B9CA:0xFF5A5D6B;
+  b.setAllCaps(false);b.setTextSize(14);b.setTypeface(android.graphics.Typeface.create("sans-serif-medium",android.graphics.Typeface.NORMAL));b.setMinHeight(dp(48));b.setMinimumHeight(dp(48));b.setPadding(dp(14),dp(10),dp(14),dp(10));b.setStateListAnimator(null);b.setElevation(0);
+  android.graphics.drawable.StateListDrawable states=new android.graphics.drawable.StateListDrawable();states.addState(new int[]{-android.R.attr.state_enabled},buttonShape(dark?0xFF3C4558:0xFFE1DFE8,0));states.addState(new int[]{android.R.attr.state_pressed},buttonShape(solid?blue:pale,blue));states.addState(new int[]{},buttonShape(solid?blue:android.graphics.Color.TRANSPARENT,solid?0:blue));b.setBackground(states);
+  b.setTextColor(new android.content.res.ColorStateList(new int[][]{new int[]{-android.R.attr.state_enabled},new int[]{}},new int[]{muted,solid?(dark?0xFF10254B:android.graphics.Color.WHITE):blue}));
+  LinearLayout.LayoutParams params=new LinearLayout.LayoutParams(-1,-2);params.setMargins(0,dp(4),0,dp(6));b.setLayoutParams(params);
  }
  private void styleGroup(RadioGroup group,boolean dark,int pad){android.graphics.drawable.GradientDrawable bg=new android.graphics.drawable.GradientDrawable();bg.setColor(dark?0xff1e2330:0xffefedf5);bg.setCornerRadius(pad);group.setBackground(bg);group.setPadding(pad/2,pad/2,pad/2,pad/2);LinearLayout.LayoutParams lp=new LinearLayout.LayoutParams(-1,-2);lp.setMargins(0,pad/2,0,pad);group.setLayoutParams(lp);}
 }
