@@ -11,7 +11,7 @@ public final class EthernetRoute {
     public final String source, iface;
     public final Network network;
     private boolean wifi;
-    public static boolean local(String ip){if(linkLocal(ip))return true;if(ip==null||!ip.matches("[0-9]{1,3}(\\.[0-9]{1,3}){3}"))return false;String[] p=ip.split("\\.");int[] n=new int[4];for(int i=0;i<4;i++){n[i]=Integer.parseInt(p[i]);if(n[i]>255)return false;}return n[0]==10 || (n[0]==172&&n[1]>=16&&n[1]<=31) || (n[0]==192&&n[1]==168);}
+    public static boolean local(String ip){if(ip!=null && ip.matches("169\\.254\\.[0-9]{1,3}\\.[0-9]{1,3}")){String[] a=ip.split("\\.");if(Integer.parseInt(a[2])<=255 && Integer.parseInt(a[3])<=255)return true;}if(ip==null||!ip.matches("[0-9]{1,3}(\\.[0-9]{1,3}){3}"))return false;String[] p=ip.split("\\.");int[] n=new int[4];for(int i=0;i<4;i++){n[i]=Integer.parseInt(p[i]);if(n[i]>255)return false;}return n[0]==10 || (n[0]==172&&n[1]>=16&&n[1]<=31) || (n[0]==192&&n[1]==168);}
 
     private final ConnectivityManager manager;
     private EthernetRoute(ConnectivityManager cm,String ip,String name,Network net) { manager=cm; source=ip; iface=name; network=net; }

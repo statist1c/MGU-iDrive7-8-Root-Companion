@@ -9,9 +9,10 @@ import java.io.*;
 import java.lang.reflect.Field;
 final class ThemeChecks {
  static void run(Instrumentation t) throws Exception {
-  if(!EthernetRoute.local("192.168.4.1")||!EthernetRoute.local("10.1.2.3")||EthernetRoute.local("8.8.8.8")||EthernetRoute.local("127.0.0.1"))throw new AssertionError("Java IPv4 policy");
+  if(!EthernetRoute.local("169.254.255.106")||!EthernetRoute.local("169.254.255.1")||EthernetRoute.linkLocal("169.254.255.106")||!EthernetRoute.local("192.168.4.1")||!EthernetRoute.local("10.1.2.3")||EthernetRoute.local("8.8.8.8")||EthernetRoute.local("127.0.0.1"))throw new AssertionError("Java IPv4 policy");
   EthernetRoute wifi=EthernetRoute.find(t.getTargetContext(),"","wifi");wifi.assertAvailable();wifi.bindProcess();wifi.release();if(wifi.network==null)throw new AssertionError("Wi-Fi network missing");
   File dir=new File(t.getTargetContext().getExternalFilesDir(null),"theme-previews");dir.mkdirs();
+  Bitmap[] icon=new Bitmap[1];t.runOnMainSync(()->{icon[0]=Bitmap.createBitmap(432,432,Bitmap.Config.ARGB_8888);android.graphics.drawable.Drawable d=t.getTargetContext().getDrawable(R.drawable.ic_mgu);d.setBounds(0,0,432,432);d.draw(new android.graphics.Canvas(icon[0]));});try(OutputStream o=new FileOutputStream(new File(dir,"icon.png"))){icon[0].compress(Bitmap.CompressFormat.PNG,100,o);}icon[0].recycle();
   for(String theme:new String[]{"light","dark","auto"}){
    AppSettings.prefs(t.getTargetContext()).edit().putString("theme",theme).putString("transport","wifi").putString("wifi_gateway","192.168.4.1").commit();
    MainActivity a=(MainActivity)t.startActivitySync(new Intent(t.getTargetContext(),MainActivity.class).addFlags(Intent.FLAG_ACTIVITY_NEW_TASK));t.waitForIdleSync();

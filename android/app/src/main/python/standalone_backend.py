@@ -17,7 +17,7 @@ _check = None
 
 def local_ip(value):
     ip = ipaddress.IPv4Address(value)
-    return (ip.is_link_local and ip.packed[2] not in (0,255)) or any(ip in ipaddress.IPv4Network(n) for n in ('10.0.0.0/8','172.16.0.0/12','192.168.0.0/16'))
+    return ip.is_link_local or any(ip in ipaddress.IPv4Network(n) for n in ('10.0.0.0/8','172.16.0.0/12','192.168.0.0/16'))
 
 
 def validate(request, check=None, now=None):

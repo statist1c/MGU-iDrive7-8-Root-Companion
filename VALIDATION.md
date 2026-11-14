@@ -1,3 +1,5 @@
+Current version: [v0.6.0 validation](VALIDATION-v0.6.0.md).
+
 For the current pre-release, see [v0.5.0 validation](VALIDATION-v0.5.0.md). The following records earlier version checks.
 
 # MGU iDrive7-8 Root Companion v0.4.0 validation

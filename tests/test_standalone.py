@@ -45,7 +45,7 @@ class StandaloneTests(unittest.TestCase):
         for field,value in [('wifi_ack',False),('network_id','124'),('ssh_override','192.168.4.4'),('transport','ethernet'),('gateway','8.8.8.8'),('source','127.0.0.1')]:
             with self.assertRaises(ValueError):app.validate(dict(req,**{field:value}),check,now=100)
         for ip in ['10.1.2.3','172.16.0.1','172.31.255.1','192.168.1.2','169.254.2.3']:self.assertTrue(app.local_ip(ip))
-        for ip in ['8.8.8.8','127.0.0.1','0.0.0.0','224.0.0.1','172.32.0.1','169.254.0.1']:self.assertFalse(app.local_ip(ip))
+        for ip in ['8.8.8.8','127.0.0.1','0.0.0.0','224.0.0.1','172.32.0.1']:self.assertFalse(app.local_ip(ip))
 
     def test_lost_network_precedes_diagnostics(self):
         guard=MagicMock(unsafe=True);guard.assertAvailable.side_effect=OSError('selected Wi-Fi lost')
@@ -62,6 +62,14 @@ class StandaloneTests(unittest.TestCase):
         self.assertEqual(result['rc'],0)
         self.assertEqual(backend.Tool.call_args.args[0].mgu_ip,'192.168.4.3')
         self.assertIn('--mgu-ip',backend.main.call_args.args[0])
+
+    def test_adapter_assigned_upper_link_local_wifi_range(self):
+        req=self.request('inspect',transport='wifi',source='169.254.255.106',gateway='169.254.254.36',interface='wlan0')
+        app.validate(req)
+        self.assertTrue(app.local_ip('169.254.255.1'))
+        self.assertTrue(app.local_ip('169.254.255.106'))
+        with self.assertRaises(ValueError):app.validate(dict(req,transport='ethernet'))
+        with self.assertRaises(ValueError):app.validate(dict(req,gateway='8.8.8.8'))
 
     def fixture(self):
         backend=MagicMock(); backend.main.return_value=0

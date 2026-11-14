@@ -1,16 +1,15 @@
-# v0.5.0 — Pre-release
+# v0.6.0 — Pre-release
 
-- Added matching app settings with Light, Dark and Auto appearance.
-- Added separate saved USB Ethernet and experimental Wi-Fi ENET profiles.
-- Added Wi-Fi network/source binding, connection-loss checks and optional private IPv4 SSH override.
-- Compatibility authorization now also matches the selected transport, Android network and SSH override.
-- Added explicit wireless-interruption acknowledgement before Wi-Fi flash/fix-key.
-- Preserved the four tabs, typed VIN authorization, backup acknowledgement and upstream rooting assets/workflow.
+- Added named VXSCAN ENET Wi-Fi/USB connection guidance; user-reported adapter SSID MHD ENET_4472. Hardware identity and SSH forwarding remain unverified.
+- Fixed Wi-Fi validation to accept adapter-assigned 169.254.255.x source/router addresses, including the range shown in user photos. Wired automatic address rules remain unchanged.
+- Preserved standard USB-C Ethernet, Light/Dark/Auto themes, separate saved profiles, selected-network binding and all existing authorization safeguards.
+- Added BMW MGU lettering inside the existing terminal icon.
+- Package identity/signing retained; versionCode4, versionName0.6.0-pre-release.
 
-Wi-Fi requires an adapter forwarding raw diagnostic TCP 6801 and SSH TCP 22. Join its SSID manually and enter its diagnostic gateway. Successful diagnostic inspection does not guarantee post-flash SSH routing. Wired Ethernet is recommended for flashing.
+The photographed device's client address is not a phone preset. The router 169.254.255.1 is not confirmed as a diagnostic or SSH endpoint. See docs/WIFI-ADAPTER.md. Wi-Fi requires raw diagnostic TCP6801 and head-unit SSH TCP22 routing. Prefer wired Ethernet for flashing.
 
-Build, offline and emulator checks only. Not tested on a physical phone, Wi-Fi ENET adapter or real BMW head unit. Flashing can brick the module, erase coding/CAFD and delete Digital Key pairings.
+Build, offline and emulator checks only. Not tested on a physical phone, Wi-Fi adapter or BMW head unit. Flashing can brick the module, erase coding/CAFD and delete Digital Key pairings.
 
-Full credit for the original rooting work goes to [cauliflowermossgrape/idrive7-8-ssh-root](https://github.com/cauliflowermossgrape/idrive7-8-ssh-root). This is an Android adaptation of that work.
+Full credit for the original rooting work goes to https://github.com/cauliflowermossgrape/idrive7-8-ssh-root . This is an Android adaptation of that work. No BMW affiliation is claimed.
 
-Publish with tag **v0.5.0** and GitHub’s **Set as a pre-release** option enabled.
+Publish with GitHub tag v0.6.0 and Set as a pre-release enabled.

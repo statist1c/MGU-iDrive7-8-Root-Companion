@@ -1,3 +1,5 @@
+Current release: **v0.6.0 pre-release**, versionCode4. See [adapter guide](WIFI-ADAPTER.md). Use GitHub tag v0.6.0 and mark the release as a pre-release. The earlier release documentation below remains historical.
+
 # v0.5.0 pre-release additions
 
 Use the gear at the top of the app for Light, Dark and Auto (phone system theme). Preferences persist across restarts. The four main tabs remain available.

@@ -130,7 +130,7 @@ public final class MainActivity extends Activity {
     }
     private void buildConnectStep() {
         LinearLayout parent=stepPages[0]; card(parent,"Get connected");
-        label(profile.equals("wifi")?"Wi-Fi ENET experimental. Join the adapter Wi-Fi, then run a read-only check. Wired Ethernet is recommended for flashing.":"Use a wired connection with your parked vehicle awake. Start with a read-only connection check.",15,MUTED);
+        label(profile.equals("wifi")?"VXSCAN ENET Wi-Fi/USB profile · experimental. User adapter SSID: MHD ENET_4472. Join adapter Wi-Fi, then run a read-only check. Wired Ethernet is recommended for flashing.":"Use a wired connection with your parked vehicle awake. Start with a read-only connection check.",15,MUTED);
         label(profile.equals("wifi")?"1   Connect the Wi-Fi ENET adapter to OBD.\n2   Join its Wi-Fi in Android settings.\n3   Enter the diagnostic gateway supplied by its maker.":"1   Connect USB-C Ethernet to your phone.\n2   Connect ENET to the car's OBD port.\n3   Check the phone's Ethernet address.",15,INK);
         adapterInfo=label("No assigned connection address detected yet.",14,MUTED); button("Detect connection address",()->detect());
         card(parent,"Connection settings"); label("Enter an assigned phone IP, or leave it blank for detection. For Wi-Fi, enter the diagnostic gateway supplied by the adapter maker.",14,MUTED);
@@ -181,7 +181,7 @@ public final class MainActivity extends Activity {
         card(parent,"Connection security"); legacy=new CheckBox(this); legacy.setText("Allow legacy RSA/SHA1 for this operation"); legacy.setTextSize(14); legacy.setTextColor(INK); legacy.setButtonTintList(ColorStateList.valueOf(BLUE)); body.addView(legacy); label("Advanced opt-in only. No automatic algorithm downgrade is used. Investigate an unexpected changed host key; do not reflash just to repair trust.",13,MUTED); secondary("Review / reset local SSH host key",()->resetHostPin());
         card(parent,"Phone Ethernet · root optional"); label("Only needed if Android settings cannot provide a working wired address and route. Requires a phone that is already rooted and your explicit approval.",14,MUTED); secondary("Configure wired IP using root",()->rootDialog(false)); secondary("Remove this app's rooted network setup",()->rootDialog(true)); secondary("Open battery settings",()->startActivity(new Intent(Settings.ACTION_IGNORE_BATTERY_OPTIMIZATION_SETTINGS)));
         card(parent,"Advanced key repair"); label("Fix refused key re-flashes the head unit and carries the same coding, Digital Key and damage risks as a normal flash. Use it only for the documented key-refusal case.",14,RED); danger("Fix refusing key — re-flash",()->prepare("fix-key"));
-        card(parent,"About this app"); label(APP_NAME+"\nv0.5.0 pre-release · runs entirely on this phone",14,MUTED); secondary("Safety & limitations",()->showSafety());
+        card(parent,"About this app"); label(APP_NAME+"\nv0.6.0 pre-release · runs entirely on this phone",14,MUTED); secondary("Safety & limitations",()->showSafety());
     }
     private void safetyCard(LinearLayout parent) { card(parent,"Experimental · read before changes"); label("Not tested on a physical phone or BMW head unit. Flashing can erase coding and Digital Keys or damage the module. The upstream root login key is shared.",13,MUTED); secondary("Safety information",()->showSafety()); }
     private void showSafety() {
