@@ -10,6 +10,9 @@ import java.util.*;
 public final class EthernetRoute {
     public final String source, iface;
     public final Network network;
+    private boolean wifi;
+    public static boolean local(String ip){if(linkLocal(ip))return true;if(ip==null||!ip.matches("[0-9]{1,3}(\\.[0-9]{1,3}){3}"))return false;String[] p=ip.split("\\.");int[] n=new int[4];for(int i=0;i<4;i++){n[i]=Integer.parseInt(p[i]);if(n[i]>255)return false;}return n[0]==10 || (n[0]==172&&n[1]>=16&&n[1]<=31) || (n[0]==192&&n[1]==168);}
+
     private final ConnectivityManager manager;
     private EthernetRoute(ConnectivityManager cm,String ip,String name,Network net) { manager=cm; source=ip; iface=name; network=net; }
     public static boolean linkLocal(String ip) {
@@ -30,19 +33,23 @@ public final class EthernetRoute {
         return new ArrayList<>(names);
     }
     public static EthernetRoute find(Context context,String preferred) throws Exception {
+        return find(context,preferred,"ethernet");
+    }
+    public static EthernetRoute find(Context context,String preferred,String transport) throws Exception {
+        boolean wifi=transport.equals("wifi");
         ConnectivityManager cm=(ConnectivityManager)context.getSystemService(Context.CONNECTIVITY_SERVICE);
         ArrayList<EthernetRoute> choices=new ArrayList<>();
         for(Network net:cm.getAllNetworks()) {
             NetworkCapabilities caps=cm.getNetworkCapabilities(net); LinkProperties links=cm.getLinkProperties(net);
-            if(caps==null || links==null || !caps.hasTransport(NetworkCapabilities.TRANSPORT_ETHERNET)) continue;
+            if(caps==null || links==null || !caps.hasTransport(wifi?NetworkCapabilities.TRANSPORT_WIFI:NetworkCapabilities.TRANSPORT_ETHERNET) || caps.hasTransport(NetworkCapabilities.TRANSPORT_VPN)) continue;
             for(LinkAddress address:links.getLinkAddresses()) {
                 String ip=address.getAddress().getHostAddress();
-                if(address.getAddress() instanceof Inet4Address && linkLocal(ip) && (preferred.isEmpty() || preferred.equals(ip)))
+                if(address.getAddress() instanceof Inet4Address && (wifi?local(ip):linkLocal(ip)) && (preferred.isEmpty() || preferred.equals(ip)))
                     choices.add(new EthernetRoute(cm,ip,links.getInterfaceName(),net));
             }
         }
         // A rooted static setup may exist before Android registers an Ethernet Network.
-        if(choices.isEmpty() && !preferred.isEmpty()) {
+        if(!wifi && choices.isEmpty() && !preferred.isEmpty()) {
             Enumeration<NetworkInterface> all=NetworkInterface.getNetworkInterfaces();
             while(all!=null && all.hasMoreElements()) {
                 NetworkInterface ni=all.nextElement();
@@ -54,15 +61,19 @@ public final class EthernetRoute {
                 }
             }
         }
-        if(choices.size()!=1) throw new IOException(choices.isEmpty()?"No assigned wired 169.254.x.x address found. Connect USB Ethernet and configure its IP in Settings, or use the rooted setup.":"Multiple Ethernet addresses found. Enter the intended source IP.");
-        return choices.get(0);
+        if(choices.size()!=1) throw new IOException(choices.isEmpty()?wifi?"No assigned Wi-Fi private IPv4 address found. Join the ENET adapter Wi-Fi and check its IP settings.":"No assigned wired 169.254.x.x address found. Configure USB Ethernet in Settings.":"Multiple Ethernet addresses found. Enter the intended source IP.");
+        EthernetRoute result=choices.get(0);result.wifi=wifi;return result;
     }
-    public void bindProcess() throws IOException {
+    public void assertAvailable() throws IOException {
+        try { if(network!=null){NetworkCapabilities c=manager.getNetworkCapabilities(network);LinkProperties l=manager.getLinkProperties(network);if(c==null||l==null||!c.hasTransport(wifi?NetworkCapabilities.TRANSPORT_WIFI:NetworkCapabilities.TRANSPORT_ETHERNET)||c.hasTransport(NetworkCapabilities.TRANSPORT_VPN)||!iface.equals(l.getInterfaceName()))throw new IOException("Selected connection was lost");boolean found=false;for(LinkAddress a:l.getLinkAddresses())if(source.equals(a.getAddress().getHostAddress()))found=true;if(!found)throw new IOException("Assigned source address changed");}else{NetworkInterface n=NetworkInterface.getByName(iface);if(n==null||!n.isUp()||!Collections.list(n.getInetAddresses()).contains(InetAddress.getByName(source)))throw new IOException("Wired source disappeared");}}catch(SocketException e){throw new IOException(e);}
+    }
+    public void bindProcess() throws IOException { assertAvailable();
         if(network!=null && !manager.bindProcessToNetwork(network)) throw new IOException("Android refused the Ethernet network binding");
     }
     public void release() { manager.bindProcessToNetwork(null); }
     public Socket socket(String host,int port,int timeout) throws IOException {
-        if(!linkLocal(host)) throw new IOException("Only link-local vehicle endpoints are permitted");
+        assertAvailable();
+        if(!(wifi?local(host):linkLocal(host))) throw new IOException("Only link-local vehicle endpoints are permitted");
         Socket socket=new Socket();
         try {
             if(network!=null) network.bindSocket(socket);

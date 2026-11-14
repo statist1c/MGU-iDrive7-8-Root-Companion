@@ -22,9 +22,11 @@ import java.util.zip.*;
 /** Original native UI inspired by the reference installer's card/tab organization. */
 public final class MainActivity extends Activity {
     private static final String APP_NAME="MGU iDrive7-8 Root Companion";
-    private static final int BG=0xFFFAF8FF, CARD=0xFFEFEDF5, INK=0xFF1D1C22,
+    private int BG=0xFFFAF8FF, CARD=0xFFEFEDF5, INK=0xFF1D1C22,
         MUTED=0xFF5A5D6B, BLUE=0xFF30477F, PALE_BLUE=0xFFDFE5F6,
         AMBER=0xFF8B5700, PALE_AMBER=0xFFFFEED2, RED=0xFF9C3437, LINE=0xFFD6D5DF;
+    private String settingsSignature,profile; private boolean dark;
+    private int ON_BLUE=Color.WHITE;
     private LinearLayout body;
     private EditText source,gateway,vin;
     private Spinner arch;
@@ -47,10 +49,13 @@ public final class MainActivity extends Activity {
     private static final String[] VARIANTS={"Choose hardware variant…","id7","id8-bdc3","id8-bcp"};
 
     @Override public void onCreate(Bundle state) {
+        dark=AppSettings.dark(this); profile=AppSettings.mode(this); settingsSignature=AppSettings.signature(this);
+        setTheme(dark?R.style.Theme_RootCompanion_Dark:R.style.Theme_RootCompanion);
+        if(dark){BG=0xFF11141C;CARD=0xFF1E2330;INK=0xFFEEF1FA;MUTED=0xFFB1B9CA;BLUE=0xFFAFC3FF;PALE_BLUE=0xFF28385B;AMBER=0xFFFFD68C;PALE_AMBER=0xFF3B2C18;RED=0xFFFFADB1;LINE=0xFF3C4558;ON_BLUE=0xFF10254B;}
         super.onCreate(state);
         getWindow().addFlags(WindowManager.LayoutParams.FLAG_SECURE);
         getWindow().setStatusBarColor(BG); getWindow().setNavigationBarColor(CARD);
-        getWindow().getDecorView().setSystemUiVisibility(View.SYSTEM_UI_FLAG_LIGHT_STATUS_BAR|View.SYSTEM_UI_FLAG_LIGHT_NAVIGATION_BAR);
+        getWindow().getDecorView().setSystemUiVisibility(dark?0:View.SYSTEM_UI_FLAG_LIGHT_STATUS_BAR|View.SYSTEM_UI_FLAG_LIGHT_NAVIGATION_BAR);
         if(Build.VERSION.SDK_INT>=30) getWindow().setDecorFitsSystemWindows(false);
         LinearLayout shell=new LinearLayout(this); shell.setOrientation(LinearLayout.VERTICAL); shell.setBackgroundColor(BG); shell.setFocusableInTouchMode(true);
         setContentView(shell);
@@ -65,8 +70,8 @@ public final class MainActivity extends Activity {
         header.addView(name,new LinearLayout.LayoutParams(0,dp(62),1));
         FrameLayout monitorShortcut=new FrameLayout(this); monitorShortcut.setContentDescription("Open activity monitor");
         Icon shortcut=new Icon(1); shortcut.color=BLUE; FrameLayout.LayoutParams shortcutParams=new FrameLayout.LayoutParams(dp(24),dp(24),Gravity.CENTER); monitorShortcut.addView(shortcut,shortcutParams);
-        monitorShortcut.setOnClickListener(v->selectTab(1)); header.addView(monitorShortcut,new LinearLayout.LayoutParams(dp(48),dp(48))); shell.addView(header);
-        status=text("Ready · connect USB Ethernet",12,MUTED); status.setPadding(dp(14),dp(8),dp(14),dp(8)); status.setMaxLines(2); status.setEllipsize(TextUtils.TruncateAt.END); status.setBackground(shape(CARD,14,0));
+        monitorShortcut.setOnClickListener(v->selectTab(1)); header.addView(monitorShortcut,new LinearLayout.LayoutParams(dp(48),dp(48))); TextView settings=text("⚙",28,BLUE);settings.setGravity(Gravity.CENTER);settings.setContentDescription("App settings");settings.setOnClickListener(v->{if(!configuring)startActivity(new Intent(this,SettingsActivity.class));});header.addView(settings,new LinearLayout.LayoutParams(dp(48),dp(48)));shell.addView(header);
+        status=text(profile.equals("wifi")?"Ready · Wi-Fi ENET experimental":"Ready · connect USB Ethernet",12,MUTED); status.setPadding(dp(14),dp(8),dp(14),dp(8)); status.setMaxLines(2); status.setEllipsize(TextUtils.TruncateAt.END); status.setBackground(shape(CARD,14,0));
         LinearLayout.LayoutParams statusParams=new LinearLayout.LayoutParams(-1,-2); statusParams.setMargins(dp(16),0,dp(16),dp(8)); shell.addView(status,statusParams);
         status.setContentDescription("Current operation status; tap for full details");
         status.setOnClickListener(v->new AlertDialog.Builder(this).setTitle("Current status").setMessage(status.getText()).setPositiveButton("Close",null).setNeutralButton("Monitor",(d,w)->selectTab(1)).show());
@@ -83,7 +88,7 @@ public final class MainActivity extends Activity {
             item.setOnClickListener(v->selectTab(index)); navigation.addView(item,new LinearLayout.LayoutParams(0,-2,1)); navItems[i]=item; navLabels[i]=caption; navPills[i]=pill; navIcons[i]=icon;
         }
         shell.addView(navigation); selectTab(0); selectStep(0); shell.requestApplyInsets(); shell.requestFocus();
-        if(state!=null) { source.setText(state.getString("source","")); gateway.setText(state.getString("gateway","169.254.254.36")); vin.setText(state.getString("vin","")); arch.setSelection(state.getInt("arch",0)); legacy.setChecked(state.getBoolean("legacy",false)); selectStep(state.getInt("step",0)); selectTab(state.getInt("tab",0)); }
+        if(state!=null) { if(profile.equals(state.getString("profile",profile))) { source.setText(state.getString("source","")); gateway.setText(state.getString("gateway","169.254.254.36")); } vin.setText(state.getString("vin","")); arch.setSelection(state.getInt("arch",0)); legacy.setChecked(state.getBoolean("legacy",false)); selectStep(state.getInt("step",0)); selectTab(state.getInt("tab",0)); }
         if(Build.VERSION.SDK_INT>=33 && checkSelfPermission(Manifest.permission.POST_NOTIFICATIONS)!=PackageManager.PERMISSION_GRANTED) requestPermissions(new String[]{Manifest.permission.POST_NOTIFICATIONS},1);
     }
     private int dp(float value) { return Math.round(value*getResources().getDisplayMetrics().density); }
@@ -98,7 +103,7 @@ public final class MainActivity extends Activity {
     }
     private TextView label(String value,int size,int color) { TextView t=text(value,size,color); t.setPadding(0,0,0,dp(10)); body.addView(t); return t; }
     private EditText input(String hint) {
-        EditText e=new EditText(this); e.setHint(hint); e.setTextSize(15); e.setTextColor(INK); e.setHintTextColor(MUTED); e.setSingleLine(true); e.setPadding(dp(14),dp(13),dp(14),dp(13)); e.setMinHeight(dp(50)); e.setBackground(shape(BG,13,0xFF898B99)); e.setImportantForAutofill(View.IMPORTANT_FOR_AUTOFILL_NO);
+        EditText e=new EditText(this); e.setHint(hint); e.setTextSize(15); e.setTextColor(INK); e.setHintTextColor(MUTED); e.setSingleLine(true); e.setPadding(dp(14),dp(13),dp(14),dp(13)); e.setMinHeight(dp(50)); e.setBackground(shape(BG,13,dark?LINE:0xFF898B99)); e.setImportantForAutofill(View.IMPORTANT_FOR_AUTOFILL_NO);
         LinearLayout.LayoutParams params=new LinearLayout.LayoutParams(-1,-2); params.bottomMargin=dp(10); body.addView(e,params); return e;
     }
     private Button button(String title,Runnable run) { return styledButton(title,run,BLUE,true); }
@@ -106,8 +111,8 @@ public final class MainActivity extends Activity {
     private Button danger(String title,Runnable run) { return styledButton(title,run,RED,false); }
     private Button styledButton(String title,Runnable run,int color,boolean solid) {
         Button b=new Button(this); b.setText(title); b.setAllCaps(false); b.setTextSize(14); b.setTypeface(Typeface.create("sans-serif-medium",Typeface.NORMAL)); b.setMinHeight(dp(48)); b.setMinimumHeight(dp(48)); b.setPadding(dp(14),dp(10),dp(14),dp(10)); b.setStateListAnimator(null); b.setElevation(0);
-        StateListDrawable backgrounds=new StateListDrawable(); backgrounds.addState(new int[]{-android.R.attr.state_enabled},shape(0xFFE1DFE8,24,0)); backgrounds.addState(new int[]{android.R.attr.state_pressed},shape(solid?color:PALE_BLUE,24,color)); backgrounds.addState(new int[]{},shape(solid?color:Color.TRANSPARENT,24,solid?0:color)); b.setBackground(backgrounds);
-        b.setTextColor(new ColorStateList(new int[][]{new int[]{-android.R.attr.state_enabled},new int[]{}},new int[]{0xFF777986,solid?Color.WHITE:color}));
+        StateListDrawable backgrounds=new StateListDrawable(); backgrounds.addState(new int[]{-android.R.attr.state_enabled},shape(dark?LINE:0xFFE1DFE8,24,0)); backgrounds.addState(new int[]{android.R.attr.state_pressed},shape(solid?color:PALE_BLUE,24,color)); backgrounds.addState(new int[]{},shape(solid?color:Color.TRANSPARENT,24,solid?0:color)); b.setBackground(backgrounds);
+        b.setTextColor(new ColorStateList(new int[][]{new int[]{-android.R.attr.state_enabled},new int[]{}},new int[]{MUTED,solid?ON_BLUE:color}));
         b.setOnClickListener(v->run.run()); LinearLayout.LayoutParams params=new LinearLayout.LayoutParams(-1,-2); params.setMargins(0,dp(4),0,dp(6)); body.addView(b,params); actions.add(b); return b;
     }
     private void op(String title,String action) { button(title,()->prepare(action)); }
@@ -115,7 +120,7 @@ public final class MainActivity extends Activity {
     private void buildSetup() {
         LinearLayout content=page(0),summary=new LinearLayout(this); summary.setGravity(Gravity.CENTER_VERTICAL);
         stepLabel=text("STEP 1 OF 4",12,BLUE); stepLabel.setTypeface(Typeface.DEFAULT_BOLD); summary.addView(stepLabel,new LinearLayout.LayoutParams(0,-2,1));
-        connectionLabel=text("●  No adapter",12,AMBER); connectionLabel.setPadding(dp(12),dp(8),dp(12),dp(8)); connectionLabel.setBackground(shape(PALE_AMBER,22,0xFFFFD597)); summary.addView(connectionLabel); content.addView(summary);
+        connectionLabel=text("●  No adapter",12,AMBER); connectionLabel.setPadding(dp(12),dp(8),dp(12),dp(8)); connectionLabel.setBackground(shape(PALE_AMBER,22,LINE)); summary.addView(connectionLabel); content.addView(summary);
         stepTitle=text("Connect to the car",25,INK); stepTitle.setTypeface(Typeface.create("sans-serif-medium",Typeface.NORMAL)); stepTitle.setPadding(0,dp(10),0,dp(14)); content.addView(stepTitle);
         LinearLayout progress=new LinearLayout(this); for(int i=0;i<4;i++) { View segment=new View(this); LinearLayout.LayoutParams p=new LinearLayout.LayoutParams(0,dp(5),1); p.setMargins(0,0,i==3?0:dp(4),0); progress.addView(segment,p); progressSegments[i]=segment; } content.addView(progress);
         LinearLayout steps=new LinearLayout(this); steps.setPadding(0,dp(18),0,dp(14)); String[] titles={"Connect","Vehicle","Root","Verify"};
@@ -125,13 +130,13 @@ public final class MainActivity extends Activity {
     }
     private void buildConnectStep() {
         LinearLayout parent=stepPages[0]; card(parent,"Get connected");
-        label("Use a wired connection with your parked vehicle awake. Start with a read-only connection check.",15,MUTED);
-        label("1   Connect USB-C Ethernet to your phone.\n2   Connect ENET to the car's OBD port.\n3   Check the phone's Ethernet address.",15,INK);
-        adapterInfo=label("No assigned Ethernet address detected yet.",14,MUTED); button("Detect Ethernet address",()->detect());
-        card(parent,"Connection settings"); label("Enter an assigned phone Ethernet IP, or leave it blank for detection. The gateway is the vehicle address.",14,MUTED);
-        label("Phone Ethernet IP",12,MUTED); source=input("Detect automatically"); source.setInputType(android.text.InputType.TYPE_CLASS_TEXT|android.text.InputType.TYPE_TEXT_VARIATION_URI);
-        label("ENET gateway",12,MUTED); gateway=input("169.254.254.36"); gateway.setText("169.254.254.36"); gateway.setInputType(android.text.InputType.TYPE_CLASS_TEXT|android.text.InputType.TYPE_TEXT_VARIATION_URI);
-        secondary("Open Android connection settings",()->startActivity(new Intent(Settings.ACTION_SETTINGS))); button("Continue to vehicle check",()->selectStep(1));
+        label(profile.equals("wifi")?"Wi-Fi ENET experimental. Join the adapter Wi-Fi, then run a read-only check. Wired Ethernet is recommended for flashing.":"Use a wired connection with your parked vehicle awake. Start with a read-only connection check.",15,MUTED);
+        label(profile.equals("wifi")?"1   Connect the Wi-Fi ENET adapter to OBD.\n2   Join its Wi-Fi in Android settings.\n3   Enter the diagnostic gateway supplied by its maker.":"1   Connect USB-C Ethernet to your phone.\n2   Connect ENET to the car's OBD port.\n3   Check the phone's Ethernet address.",15,INK);
+        adapterInfo=label("No assigned connection address detected yet.",14,MUTED); button("Detect connection address",()->detect());
+        card(parent,"Connection settings"); label("Enter an assigned phone IP, or leave it blank for detection. For Wi-Fi, enter the diagnostic gateway supplied by the adapter maker.",14,MUTED);
+        label("Phone connection IP",12,MUTED); source=input("Detect automatically"); source.setInputType(android.text.InputType.TYPE_CLASS_TEXT|android.text.InputType.TYPE_TEXT_VARIATION_URI);
+        label("ENET gateway",12,MUTED); gateway=input(profile.equals("wifi")?"Adapter diagnostic gateway IPv4":"169.254.254.36"); gateway.setText(AppSettings.prefs(this).getString(profile+"_gateway",profile.equals("wifi")?"":"169.254.254.36"));source.setText(AppSettings.prefs(this).getString(profile+"_source","")); gateway.setInputType(android.text.InputType.TYPE_CLASS_TEXT|android.text.InputType.TYPE_TEXT_VARIATION_URI);
+        secondary("Open Android connection settings",()->startActivity(new Intent(profile.equals("wifi")?Settings.ACTION_WIFI_SETTINGS:Settings.ACTION_SETTINGS))); button("Continue to vehicle check",()->selectStep(1));
         card(parent,"Phone root is optional"); label("The app runs without phone root when Android supplies a working Ethernet address and route. Some phones need their wired IP configured in Settings; rooted phones can use the helper under SSH → Phone Ethernet.",14,MUTED);
         secondary("Ethernet helper & advanced settings",()->selectTab(3));
         safetyCard(parent);
@@ -145,7 +150,7 @@ public final class MainActivity extends Activity {
         safetyCard(parent);
     }
     private void buildRootStep() {
-        LinearLayout parent=stepPages[2]; card(parent,"Before you flash"); body.setBackground(shape(PALE_AMBER,22,0xFFF1D198)); label("Flashing can permanently damage the module, erase coding / CAFD and delete Digital Key pairings.",16,AMBER);
+        LinearLayout parent=stepPages[2]; card(parent,"Before you flash"); body.setBackground(shape(PALE_AMBER,22,LINE)); label("Flashing can permanently damage the module, erase coding / CAFD and delete Digital Key pairings.",16,AMBER);
         label("Have a verified restorable coding backup, a restore plan and stable phone/vehicle power. Keep the ENET cable connected. Android can stop apps even with a wake lock.",14,INK); secondary("Read all safety information",()->showSafety());
         card(parent,"One-time root setup"); label("Run a fresh, matching vehicle check first. The app flashes the debug package, enrolls SSH and requests persistence. Never repeat a flash merely to fix reset settings.",15,MUTED); op("Flash + Enable SSH","flash"); secondary("Go to vehicle check",()->selectStep(1));
         card(parent,"Already flashed?"); label("Repair SSH only if it stopped answering. This does not flash firmware, but it changes debug / SSH state and may reboot the unit.",14,MUTED); secondary("Repair SSH & request persistence",()->prepare("enable")); secondary("Continue to verification",()->selectStep(3));
@@ -176,7 +181,7 @@ public final class MainActivity extends Activity {
         card(parent,"Connection security"); legacy=new CheckBox(this); legacy.setText("Allow legacy RSA/SHA1 for this operation"); legacy.setTextSize(14); legacy.setTextColor(INK); legacy.setButtonTintList(ColorStateList.valueOf(BLUE)); body.addView(legacy); label("Advanced opt-in only. No automatic algorithm downgrade is used. Investigate an unexpected changed host key; do not reflash just to repair trust.",13,MUTED); secondary("Review / reset local SSH host key",()->resetHostPin());
         card(parent,"Phone Ethernet · root optional"); label("Only needed if Android settings cannot provide a working wired address and route. Requires a phone that is already rooted and your explicit approval.",14,MUTED); secondary("Configure wired IP using root",()->rootDialog(false)); secondary("Remove this app's rooted network setup",()->rootDialog(true)); secondary("Open battery settings",()->startActivity(new Intent(Settings.ACTION_IGNORE_BATTERY_OPTIMIZATION_SETTINGS)));
         card(parent,"Advanced key repair"); label("Fix refused key re-flashes the head unit and carries the same coding, Digital Key and damage risks as a normal flash. Use it only for the documented key-refusal case.",14,RED); danger("Fix refusing key — re-flash",()->prepare("fix-key"));
-        card(parent,"About this app"); label(APP_NAME+"\nv0.4.0 experimental · runs entirely on this phone",14,MUTED); secondary("Safety & limitations",()->showSafety());
+        card(parent,"About this app"); label(APP_NAME+"\nv0.5.0 pre-release · runs entirely on this phone",14,MUTED); secondary("Safety & limitations",()->showSafety());
     }
     private void safetyCard(LinearLayout parent) { card(parent,"Experimental · read before changes"); label("Not tested on a physical phone or BMW head unit. Flashing can erase coding and Digital Keys or damage the module. The upstream root login key is shared.",13,MUTED); secondary("Safety information",()->showSafety()); }
     private void showSafety() {
@@ -186,10 +191,10 @@ public final class MainActivity extends Activity {
     private void refreshBackupSummary() { int identities=countDirectories(new File(getFilesDir(),"backend/data/enrollments")),dumps=countDirectories(new File(getFilesDir(),"backend/data/preflight")); File[] files=new File(getFilesDir(),"job-logs").listFiles(); backupSummary.setText(identities+" SSH key bundle"+(identities==1?"":"s")+"\n"+dumps+" coding dump"+(dumps==1?"":"s")+"\n"+(files==null?0:files.length)+" session logs\n\nStored privately inside this app."); }
     private int countDirectories(File dir) { File[] files=dir.listFiles(File::isDirectory); return files==null?0:files.length; }
     void selectTab(int index) { selectedTab=Math.max(0,Math.min(3,index)); for(int i=0;i<4;i++) { tabs[i].setVisibility(i==selectedTab?View.VISIBLE:View.GONE); navPills[i].setBackground(shape(i==selectedTab?PALE_BLUE:Color.TRANSPARENT,18,0)); navLabels[i].setTextColor(i==selectedTab?BLUE:MUTED); navLabels[i].setTypeface(i==selectedTab?Typeface.DEFAULT_BOLD:Typeface.DEFAULT); navIcons[i].color=i==selectedTab?BLUE:MUTED; navIcons[i].invalidate(); navItems[i].setSelected(i==selectedTab); } if(selectedTab==2) refreshBackupSummary(); }
-    void selectStep(int step) { selectedStep=Math.max(0,Math.min(3,step)); String[] titles={"Connect to the car","Identify your head unit","Enable root SSH","Verify & keep a backup"}; stepLabel.setText("STEP "+(selectedStep+1)+" OF 4"); stepTitle.setText(titles[selectedStep]); for(int i=0;i<4;i++) { stepPages[i].setVisibility(i==selectedStep?View.VISIBLE:View.GONE); stepButtons[i].setBackground(shape(i==selectedStep?BLUE:Color.TRANSPARENT,14,i==selectedStep?0:LINE)); stepButtons[i].setTextColor(i==selectedStep?Color.WHITE:MUTED); stepButtons[i].setSelected(i==selectedStep); progressSegments[i].setBackground(shape(i==selectedStep?BLUE:LINE,4,0)); } tabs[0].post(()->tabs[0].smoothScrollTo(0,0)); }
+    void selectStep(int step) { selectedStep=Math.max(0,Math.min(3,step)); String[] titles={"Connect to the car","Identify your head unit","Enable root SSH","Verify & keep a backup"}; stepLabel.setText("STEP "+(selectedStep+1)+" OF 4"); stepTitle.setText(titles[selectedStep]); for(int i=0;i<4;i++) { stepPages[i].setVisibility(i==selectedStep?View.VISIBLE:View.GONE); stepButtons[i].setBackground(shape(i==selectedStep?BLUE:Color.TRANSPARENT,14,i==selectedStep?0:LINE)); stepButtons[i].setTextColor(i==selectedStep?ON_BLUE:MUTED); stepButtons[i].setSelected(i==selectedStep); progressSegments[i].setBackground(shape(i==selectedStep?BLUE:LINE,4,0)); } tabs[0].post(()->tabs[0].smoothScrollTo(0,0)); }
     private void renderLog() { filterAll.setBackground(shape(onlyIssues?Color.TRANSPARENT:PALE_BLUE,20,0)); filterIssues.setBackground(shape(onlyIssues?PALE_BLUE:Color.TRANSPARENT,20,0)); filterAll.setTextColor(onlyIssues?MUTED:BLUE); filterIssues.setTextColor(onlyIssues?BLUE:MUTED); String display=logs; if(onlyIssues) { StringBuilder found=new StringBuilder(); for(String line:logs.split("\\n")) if(line.toLowerCase(Locale.ROOT).matches(".*(fail|error|warn|reject|refus|unavailable|inconclusive|permission|unsupported).*")) found.append(line).append('\n'); display=found.toString(); } if(clearedView) display="Display cleared. Saved logs have not been deleted."; else if(display.isEmpty()) display=onlyIssues?"No issues in the current log.":"Nothing logged yet. Run a read-only vehicle check to begin."; log.setText(display); }
-    private void pollConnection() { if(BackendService.running||configuring) return; String preferred=source.getText().toString().trim(); background.execute(()->{ String badge,detail; boolean ready=false; try { EthernetRoute route=EthernetRoute.find(this,preferred); badge="●  Address ready"; detail=route.iface+"  ·  "+route.source+"\nAssigned phone address; run the vehicle check to test reachability."; ready=true; } catch(Exception e) { java.util.List<String> candidates=EthernetRoute.interfaceCandidates(this); badge=candidates.isEmpty()?"●  No adapter":"●  IP setup needed"; detail=candidates.isEmpty()?"No wired Ethernet interface is visible yet.":"Adapter: "+candidates+"\nConfigure a usable link-local Ethernet address."; } String b=badge,d=detail; boolean ok=ready; handler.post(()->{ connectionLabel.setText(b); connectionLabel.setTextColor(ok?BLUE:AMBER); connectionLabel.setBackground(shape(ok?PALE_BLUE:PALE_AMBER,22,ok?0:0xFFFFD597)); adapterInfo.setText(d); }); }); }
-    @Override protected void onSaveInstanceState(Bundle state) { state.putString("source",source.getText().toString()); state.putString("gateway",gateway.getText().toString()); state.putString("vin",vin.getText().toString()); state.putInt("arch",arch.getSelectedItemPosition()); state.putBoolean("legacy",legacy.isChecked()); state.putInt("tab",selectedTab); state.putInt("step",selectedStep); super.onSaveInstanceState(state); }
+    private void pollConnection() { if(BackendService.running||configuring) return; String preferred=source.getText().toString().trim(); background.execute(()->{ String badge,detail; boolean ready=false; try { EthernetRoute route=EthernetRoute.find(this,preferred,profile); badge="●  Address ready"; detail=route.iface+"  ·  "+route.source+"\nAssigned phone address; run the vehicle check to test reachability."; ready=true; } catch(Exception e) { java.util.List<String> candidates=EthernetRoute.interfaceCandidates(this); badge=candidates.isEmpty()?"●  No adapter":"●  IP setup needed"; detail=candidates.isEmpty()?"No usable selected connection is visible. Join adapter Wi-Fi or connect USB Ethernet.":"Adapter: "+candidates+"\nConfigure an address for the selected connection profile."; } String b=badge,d=detail; boolean ok=ready; handler.post(()->{ connectionLabel.setText(b); connectionLabel.setTextColor(ok?BLUE:AMBER); connectionLabel.setBackground(shape(ok?PALE_BLUE:PALE_AMBER,22,ok?0:LINE)); adapterInfo.setText(d); }); }); }
+    @Override protected void onSaveInstanceState(Bundle state) { state.putString("profile",profile); state.putString("source",source.getText().toString()); state.putString("gateway",gateway.getText().toString()); state.putString("vin",vin.getText().toString()); state.putInt("arch",arch.getSelectedItemPosition()); state.putBoolean("legacy",legacy.isChecked()); state.putInt("tab",selectedTab); state.putInt("step",selectedStep); super.onSaveInstanceState(state); }
     private final class Icon extends View {
         final int kind; int color=BLUE; final Paint paint=new Paint(Paint.ANTI_ALIAS_FLAG);
         Icon(int type) { super(MainActivity.this); kind=type; setImportantForAccessibility(View.IMPORTANT_FOR_ACCESSIBILITY_NO); }
@@ -204,7 +209,7 @@ public final class MainActivity extends Activity {
     private void saveIntent(int code,String type,String name) { Intent i=new Intent(Intent.ACTION_CREATE_DOCUMENT).setType(type); i.addCategory(Intent.CATEGORY_OPENABLE); i.putExtra(Intent.EXTRA_TITLE,name); startActivityForResult(i,code); }
     private void detect() {
         if(BackendService.running || configuring) return;
-        try { EthernetRoute route=EthernetRoute.find(this,source.getText().toString().trim()); source.setText(route.source); status.setText("Assigned wired address: "+route.iface+" / "+route.source+". Run a read-only check next."); }
+        try { EthernetRoute route=EthernetRoute.find(this,source.getText().toString().trim(),profile); source.setText(route.source); status.setText("Assigned connection address: "+route.iface+" / "+route.source+". Run a read-only check next."); }
         catch(Exception e) { status.setText(e.getMessage()); }
     }
     private void resetHostPin() {
@@ -229,21 +234,22 @@ public final class MainActivity extends Activity {
             if(arch.getSelectedItemPosition()==0) { selectTab(0); selectStep(1); throw new IOException("Choose the actual head-unit variant in Vehicle check"); }
             JSONObject req=new JSONObject().put("action",action).put("arch",VARIANTS[arch.getSelectedItemPosition()])
                 .put("source",source.getText().toString().trim()).put("gateway",gateway.getText().toString().trim())
-                .put("vin",vin.getText().toString().trim().toUpperCase(Locale.ROOT)).put("legacy",legacy.isChecked());
-            if(!EthernetRoute.linkLocal(req.getString("gateway"))) throw new IOException("Enter a usable link-local ENET gateway");
+                .put("transport",profile).put("ssh_override",profile.equals("wifi")?AppSettings.prefs(this).getString("ssh_override",""):"").put("vin",vin.getText().toString().trim().toUpperCase(Locale.ROOT)).put("legacy",legacy.isChecked());
+            if(!(profile.equals("wifi")?EthernetRoute.local(req.getString("gateway")):EthernetRoute.linkLocal(req.getString("gateway")))) throw new IOException("Enter a usable gateway IPv4 address for the selected profile");
             if(!action.equals("inspect") && !req.getString("vin").matches("[A-HJ-NPR-Z0-9]{17}")) { selectTab(0); selectStep(1); throw new IOException("Enter the exact physical VIN in Vehicle check"); }
             if(action.equals("inspect") || action.equals("status") || action.equals("preflight")) { start(req); return; }
             boolean flash=action.equals("flash") || action.equals("fix-key");
             LinearLayout panel=new LinearLayout(this); panel.setOrientation(LinearLayout.VERTICAL); panel.setPadding(24,8,24,8);
             TextView warning=new TextView(this); warning.setText((flash?"This reprograms the head unit. It can brick the module, erase coding/CAFD and delete Digital Key pairings. ":"This changes root SSH / debug behavior and may reboot the head unit. ")+"Use only on your authorized parked vehicle. Keep stable power and the ENET cable connected. No hardware validation is claimed.\n\nType exactly:\nI AUTHORIZE "+req.getString("vin")); panel.addView(warning);
             CheckBox backup=new CheckBox(this); backup.setText("I have a verified restorable coding backup, a restore plan, stable power and unrestricted battery settings for this app."); if(flash) panel.addView(backup);
+            CheckBox wifiAck=new CheckBox(this);wifiAck.setText("I understand Wi-Fi interruptions can brick the module, and my adapter must forward diagnostic TCP 6801 and SSH TCP 22.");if(flash&&profile.equals("wifi"))panel.addView(wifiAck);
             EditText confirm=new EditText(this); confirm.setSingleLine(true); panel.addView(confirm);
             ScrollView scroll=new ScrollView(this); scroll.addView(panel);
             AlertDialog dialog=new AlertDialog.Builder(this).setTitle("Authorize "+action).setView(scroll).setNegativeButton("Cancel",null).setPositiveButton("Start",null).create();
             dialog.setOnShowListener(v->dialog.getButton(AlertDialog.BUTTON_POSITIVE).setOnClickListener(w->{
                 try {
-                    if(!confirm.getText().toString().equals("I AUTHORIZE "+req.getString("vin")) || (flash && !backup.isChecked())) { confirm.setError("Enter the exact phrase and acknowledge the backup"); return; }
-                    req.put("confirm",confirm.getText().toString()).put("backup",backup.isChecked()); dialog.dismiss(); start(req);
+                    if(!confirm.getText().toString().equals("I AUTHORIZE "+req.getString("vin")) || (flash && !backup.isChecked()) || (flash && profile.equals("wifi") && !wifiAck.isChecked())) { confirm.setError("Enter the exact phrase and acknowledge the backup"); return; }
+                    req.put("wifi_ack",wifiAck.isChecked());req.put("confirm",confirm.getText().toString()).put("backup",backup.isChecked()); dialog.dismiss(); start(req);
                 } catch(Exception e) { status.setText(e.getMessage()); }
             })); dialog.show();
         } catch(Exception e) { status.setText(e.getMessage()); }
@@ -333,8 +339,8 @@ public final class MainActivity extends Activity {
             });
         }
     }
-    @Override protected void onResume() { super.onResume(); handler.post(refresh); }
-    @Override protected void onPause() { handler.removeCallbacks(refresh); super.onPause(); }
+    @Override protected void onResume() { super.onResume(); if(!settingsSignature.equals(AppSettings.signature(this))){recreate();return;}handler.post(refresh); }
+    @Override protected void onPause() { handler.removeCallbacks(refresh);AppSettings.prefs(this).edit().putString(profile+"_source",source.getText().toString()).putString(profile+"_gateway",gateway.getText().toString()).apply(); super.onPause(); }
     @Override protected void onDestroy() { handler.removeCallbacks(refresh); background.shutdown(); super.onDestroy(); }
     @Override public void onBackPressed() {
         if(BackendService.running) new AlertDialog.Builder(this).setTitle("Vehicle operation is running").setMessage("Leaving this screen does not cancel the service. Keep the app alive, phone power stable and ENET connected. Never force-stop to cancel flashing.").setNegativeButton("Stay",null).setPositiveButton("Leave screen",(d,w)->finish()).show();

@@ -38,6 +38,31 @@ class StandaloneTests(unittest.TestCase):
         app.validate(self.request('status',confirm='',backup=False))
         app.validate(self.request('preflight',confirm='',backup=False))
 
+    def test_wifi_policy_and_gate_identity(self):
+        req=self.request(transport='wifi',source='192.168.4.2',gateway='192.168.4.1',interface='wlan0',network_id='123',ssh_override='192.168.4.3',wifi_ack=True)
+        check=dict(req,time=100)
+        app.validate(req,check,now=100)
+        for field,value in [('wifi_ack',False),('network_id','124'),('ssh_override','192.168.4.4'),('transport','ethernet'),('gateway','8.8.8.8'),('source','127.0.0.1')]:
+            with self.assertRaises(ValueError):app.validate(dict(req,**{field:value}),check,now=100)
+        for ip in ['10.1.2.3','172.16.0.1','172.31.255.1','192.168.1.2','169.254.2.3']:self.assertTrue(app.local_ip(ip))
+        for ip in ['8.8.8.8','127.0.0.1','0.0.0.0','224.0.0.1','172.32.0.1','169.254.0.1']:self.assertFalse(app.local_ip(ip))
+
+    def test_lost_network_precedes_diagnostics(self):
+        guard=MagicMock(unsafe=True);guard.assertAvailable.side_effect=OSError('selected Wi-Fi lost')
+        backend,mgu=self.fixture()
+        with patch.dict('sys.modules',{'ssh_enable':backend,'mgu7':mgu}),patch('standalone_backend.socket.create_connection') as connect:
+            result=json.loads(app.run('/mock',json.dumps(self.request('inspect')),MagicMock(),MagicMock(),guard))
+        self.assertEqual(result['rc'],1);connect.assert_not_called();backend.Tool.assert_not_called()
+
+    def test_wifi_ssh_override_reaches_upstream(self):
+        backend,mgu=self.fixture()
+        req=self.request(transport='wifi',source='192.168.4.2',gateway='192.168.4.1',interface='wlan0',network_id='123',ssh_override='192.168.4.3',wifi_ack=True)
+        app._check=dict(req,time=app.time.monotonic())
+        result,_=self.execute(req,backend,mgu)
+        self.assertEqual(result['rc'],0)
+        self.assertEqual(backend.Tool.call_args.args[0].mgu_ip,'192.168.4.3')
+        self.assertIn('--mgu-ip',backend.main.call_args.args[0])
+
     def fixture(self):
         backend=MagicMock(); backend.main.return_value=0
         tool=backend.Tool.return_value

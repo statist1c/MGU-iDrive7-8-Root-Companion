@@ -1,3 +1,5 @@
+For the current pre-release, see [v0.5.0 validation](VALIDATION-v0.5.0.md). The following records earlier version checks.
+
 # MGU iDrive7-8 Root Companion v0.4.0 validation
 
 Checked on 14 November 2026. This release updates the app name, light theme, card layouts, navigation, setup steps and presentation of existing controls. Diagnostic/SSH/rooting backend code is unchanged from v0.3.

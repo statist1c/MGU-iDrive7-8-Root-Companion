@@ -96,13 +96,13 @@ public final class BackendService extends Service {
             logFile=new BufferedWriter(new OutputStreamWriter(new FileOutputStream(new File(logs,System.currentTimeMillis()+".log")),StandardCharsets.UTF_8));
             if(!save()) throw new IOException("Cannot persist an in-progress job marker; refusing vehicle traffic");
             wake=((PowerManager)getSystemService(POWER_SERVICE)).newWakeLock(PowerManager.PARTIAL_WAKE_LOCK,"MGU:operation"); wake.acquire();
-            route=EthernetRoute.find(this,req.optString("source","")); route.bindProcess();
-            req.put("source",route.source).put("interface",route.iface);
+            route=EthernetRoute.find(this,req.optString("source",""),req.optString("transport","ethernet")); route.bindProcess();
+            req.put("network_id",route.network==null?"wired:"+route.iface:String.valueOf(route.network.getNetworkHandle()));req.put("source",route.source).put("interface",route.iface);
             onLine("Wired interface "+route.iface+" · source "+route.source);
             File backend=extractBackend(this);
             if(!Python.isStarted()) Python.start(new AndroidPlatform(this));
             SshAdapter ssh=new SshAdapter(this,route,this,req.optBoolean("legacy",false));
-            String response=Python.getInstance().getModule("standalone_backend").callAttr("run",backend.getPath(),req.toString(),this,ssh).toString();
+            String response=Python.getInstance().getModule("standalone_backend").callAttr("run",backend.getPath(),req.toString(),this,ssh,route).toString();
             JSONObject outcome=new JSONObject(response);
             synchronized(BackendService.class) { result=response; phase=outcome.optInt("rc",1)==0?"complete":"failed"; }
         } catch(Throwable e) {

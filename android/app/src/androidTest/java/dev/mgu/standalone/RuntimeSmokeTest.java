@@ -27,6 +27,7 @@ public final class RuntimeSmokeTest extends Instrumentation {
                 result.putString("stream","PASS: all four tabs, input retention, safety dialog and blocked empty authorization. No vehicle traffic.\n");
                 finish(-1,result); return;
             }
+            if(options!=null && "true".equals(options.getString("themes"))){ThemeChecks.run(this);result.putString("stream","PASS: light/dark/auto themes, Wi-Fi profile, settings and Java IPv4 policy. No vehicle traffic.\n");finish(-1,result);return;}
             Context context=getTargetContext();
             File backend=BackendService.extractBackend(context);
             Security.removeProvider("BC"); Security.addProvider(new BouncyCastleProvider());

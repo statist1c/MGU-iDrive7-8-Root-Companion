@@ -1,3 +1,17 @@
+# v0.5.0 pre-release additions
+
+Use the gear at the top of the app for Light, Dark and Auto (phone system theme). Preferences persist across restarts. The four main tabs remain available.
+
+Select USB Ethernet or Wi-Fi ENET before starting an operation. Each profile saves its phone source and diagnostic gateway independently. Wi-Fi gateway starts empty: obtain it from the adapter maker. Join its SSID in Android Wi-Fi settings; no internet connection is required. Leave phone source blank to detect an assigned address. Optional Wi-Fi SSH IPv4 override is in App settings. Only adapters forwarding raw TCP 6801 diagnostics and TCP 22 SSH can work. No adapter-specific certification is claimed. The root IP helper remains wired-only; normal Wi-Fi needs no phone root.
+
+Connection profile changes are disabled during a backend job. A compatibility check is tied to the VIN, variant, addresses, interface, Android network handle and transport; changing these requires inspection again. Wi-Fi flash/fix-key also requires explicit wireless-interruption acknowledgement. Prefer wired flashing. Theme changes do not stop the foreground backend.
+
+The release APK retains the previous local signing identity, package ID and increments versionCode to 3. Install over v0.4.0 to retain app data; export private keys/backups first. A build signed with another key cannot update it. Never distribute a signing keystore.
+
+GitHub release: tag `v0.5.0`, title `v0.5.0 — Pre-release`, check **Set as a pre-release**, and upload the APK plus matching source/checksums. This package does not publish a release automatically.
+
+---
+
 # MGU iDrive7-8 Root Companion — v0.4.0
 
 This is a separate **self-contained Android app project**. The APK embeds Python, the original MGU diagnostic/programming backend, cryptography and a Java SSH client. At runtime it uses no PC, Termux, local bridge server, token pairing, shell package manager or second app. Optional rooted Ethernet configuration calls the phone's already-existing `su`; it does not install root or bypass Android security.

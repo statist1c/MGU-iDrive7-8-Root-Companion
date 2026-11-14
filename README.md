@@ -1,6 +1,8 @@
 # MGU iDrive7-8 Root Companion
 
-An experimental, self-contained **Android version of [idrive7-8-ssh-root](https://github.com/cauliflowermossgrape/idrive7-8-ssh-root)** for BMW MGU iDrive 7/8 head units over wired ENET.
+An experimental, self-contained **Android version of [idrive7-8-ssh-root](https://github.com/cauliflowermossgrape/idrive7-8-ssh-root)** for BMW MGU iDrive 7/8 head units over USB Ethernet or experimental Wi-Fi ENET.
+
+**v0.5.0 pre-release**
 
 ## Full credits
 
@@ -14,14 +16,18 @@ This project is an Android adaptation of the author's work, adding a phone inter
 - **Monitor:** live status, logs, issue filtering and log export.
 - **Backups:** private key/data export and read-only coding dumps.
 - **SSH:** repair, persistence and access-management controls.
+- **Settings:** Light, Dark or Auto appearance; separate USB/Wi-Fi connection profiles.
+- **Wi-Fi ENET (experimental):** selected-network routing and optional private IPv4 SSH override.
 - Runs entirely on the phone: **no PC or Termux required at runtime**.
 
-<img src="docs/images/setup.png" alt="Setup tab — emulator preview" width="300" />
+<img src="docs/images/light.png" alt="Light appearance — emulator preview" width="260" /> <img src="docs/images/dark.png" alt="Dark appearance — emulator preview" width="260" />
+
+<img src="docs/images/settings.png" alt="App settings — emulator-rendered preview" width="260" />
 
 ## Requirements
 
-- Android 8.0 or newer; a supported USB-C Ethernet adapter and wired ENET cable.
-- A correctly assigned/routed Ethernet address on the vehicle's link-local network.
+- Android 8.0 or newer; USB-C Ethernet + ENET cable, or a Wi-Fi ENET adapter that forwards raw diagnostic TCP 6801 and head-unit SSH TCP 22.
+- A correctly assigned address and route for the selected connection.
 - An authorized, parked vehicle and stable phone/vehicle power.
 
 **Phone root is optional.** Some phones can configure Ethernet through Android settings; others may need the optional rooted network helper.
@@ -29,9 +35,15 @@ This project is an Android adaptation of the author's work, adding a phone inter
 ## Install
 
 1. Download the APK from this repository's **Releases** page and install it.
-2. Open the app, connect Ethernet/ENET, and select the actual head-unit variant.
+2. Open the gear icon to choose Light, Dark or Auto and USB Ethernet or Wi-Fi ENET. Join adapter Wi-Fi in Android settings, enter its diagnostic gateway on Connect, then select the actual head-unit variant.
 3. Run **Check compatibility & read VIN** first and verify the VIN physically.
 4. Read the warnings and verify a restorable coding backup before considering any flash.
+
+## Wi-Fi ENET limitations
+
+Wi-Fi support is experimental and adapter-dependent. Join the adapter SSID manually and stay connected if Android reports no internet. The app binds to the selected Wi-Fi network and source address; it does not select cellular or VPN routes. Private IPv4 and usable IPv4 link-local endpoints are allowed. Configure an optional SSH IPv4 override in Settings if required by the adapter. Bluetooth, proprietary app-only protocols, arbitrary port remapping and automatic SSID discovery are not supported.
+
+**Prefer wired Ethernet for flashing.** A Wi-Fi dropout can interrupt programming and leave the head unit unusable. A successful VIN/compatibility check verifies diagnostics, not that a closed SSH port will become reachable after flashing. No physical Wi-Fi adapter has been validated.
 
 ## Important warnings
 
