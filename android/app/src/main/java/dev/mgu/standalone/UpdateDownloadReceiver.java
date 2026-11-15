@@ -1,3 +1,4 @@
+// SPDX-License-Identifier: GPL-3.0-only
 // Adapted from the user’s MGU Store Installer project (GPL-3.0).
 // See licenses/MGU-Store-Installer-GPL-3.0.txt and THIRD-PARTY.md.
 package dev.mgu.standalone;

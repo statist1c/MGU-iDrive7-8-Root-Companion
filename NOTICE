@@ -1,0 +1,18 @@
+MGU iDrive7-8 Root Companion
+Copyright (C) 2026 statist1c and contributors.
+
+The maintained Android companion is distributed under the GNU General Public
+License version 3 only (GPL-3.0-only); see LICENSE. It is supplied without warranty.
+
+Full credit for the original rooting method, research, diagnostic/flashing code
+and supplied assets goes to cauliflowermossgrape/idrive7-8-ssh-root.
+The unmodified snapshot in vendor/upstream retains its original Unlicense.
+Dependencies retain their own licenses, copyright notices and attributions;
+see THIRD-PARTY.md and licenses/.
+
+The BMW name and roundel are third-party trademarks, excluded from the software
+license grant. No BMW affiliation, endorsement or permission is claimed. The
+selected icon has not been changed in this licensing update.
+
+Previously distributed copies retain the permissions already granted to them.
+This change does not revoke the Unlicense permissions of earlier source copies.

@@ -1,0 +1,50 @@
+[
+  {
+    "path": "licenses/setuptools-68.2.2-vendored/pkg_resources/_vendor/importlib_resources-5.10.2.dist-info/LICENSE",
+    "source": "https://raw.githubusercontent.com/pypa/setuptools/v68.2.2/pkg_resources/_vendor/importlib_resources-5.10.2.dist-info/LICENSE"
+  },
+  {
+    "path": "licenses/setuptools-68.2.2-vendored/pkg_resources/_vendor/jaraco.context-4.3.0.dist-info/LICENSE",
+    "source": "https://raw.githubusercontent.com/pypa/setuptools/v68.2.2/pkg_resources/_vendor/jaraco.context-4.3.0.dist-info/LICENSE"
+  },
+  {
+    "path": "licenses/setuptools-68.2.2-vendored/pkg_resources/_vendor/jaraco.functools-3.6.0.dist-info/LICENSE",
+    "source": "https://raw.githubusercontent.com/pypa/setuptools/v68.2.2/pkg_resources/_vendor/jaraco.functools-3.6.0.dist-info/LICENSE"
+  },
+  {
+    "path": "licenses/setuptools-68.2.2-vendored/pkg_resources/_vendor/jaraco.text-3.7.0.dist-info/LICENSE",
+    "source": "https://raw.githubusercontent.com/pypa/setuptools/v68.2.2/pkg_resources/_vendor/jaraco.text-3.7.0.dist-info/LICENSE"
+  },
+  {
+    "path": "licenses/setuptools-68.2.2-vendored/pkg_resources/_vendor/more_itertools-9.1.0.dist-info/LICENSE",
+    "source": "https://raw.githubusercontent.com/pypa/setuptools/v68.2.2/pkg_resources/_vendor/more_itertools-9.1.0.dist-info/LICENSE"
+  },
+  {
+    "path": "licenses/setuptools-68.2.2-vendored/pkg_resources/_vendor/packaging-23.1.dist-info/LICENSE",
+    "source": "https://raw.githubusercontent.com/pypa/setuptools/v68.2.2/pkg_resources/_vendor/packaging-23.1.dist-info/LICENSE"
+  },
+  {
+    "path": "licenses/setuptools-68.2.2-vendored/pkg_resources/_vendor/packaging-23.1.dist-info/LICENSE.APACHE",
+    "source": "https://raw.githubusercontent.com/pypa/setuptools/v68.2.2/pkg_resources/_vendor/packaging-23.1.dist-info/LICENSE.APACHE"
+  },
+  {
+    "path": "licenses/setuptools-68.2.2-vendored/pkg_resources/_vendor/packaging-23.1.dist-info/LICENSE.BSD",
+    "source": "https://raw.githubusercontent.com/pypa/setuptools/v68.2.2/pkg_resources/_vendor/packaging-23.1.dist-info/LICENSE.BSD"
+  },
+  {
+    "path": "licenses/setuptools-68.2.2-vendored/pkg_resources/_vendor/platformdirs-2.6.2.dist-info/licenses/LICENSE",
+    "source": "https://raw.githubusercontent.com/pypa/setuptools/v68.2.2/pkg_resources/_vendor/platformdirs-2.6.2.dist-info/licenses/LICENSE"
+  },
+  {
+    "path": "licenses/setuptools-68.2.2-vendored/pkg_resources/_vendor/typing_extensions-4.4.0.dist-info/LICENSE",
+    "source": "https://raw.githubusercontent.com/pypa/setuptools/v68.2.2/pkg_resources/_vendor/typing_extensions-4.4.0.dist-info/LICENSE"
+  },
+  {
+    "path": "licenses/setuptools-68.2.2-vendored/pkg_resources/_vendor/vendored.txt",
+    "source": "https://raw.githubusercontent.com/pypa/setuptools/v68.2.2/pkg_resources/_vendor/vendored.txt"
+  },
+  {
+    "path": "licenses/setuptools-68.2.2-vendored/pkg_resources/_vendor/zipp-3.7.0.dist-info/LICENSE",
+    "source": "https://raw.githubusercontent.com/pypa/setuptools/v68.2.2/pkg_resources/_vendor/zipp-3.7.0.dist-info/LICENSE"
+  }
+]

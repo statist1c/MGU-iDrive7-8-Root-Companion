@@ -19,7 +19,13 @@ chaquopy {
             buildPython(project.property('standaloneBuildPython').toString())
         }
         // Install Python 3.13 on the build computer. The app embeds its own runtime.
-        pip { install 'cryptography==42.0.8' }
+        pip {
+            install 'cryptography==42.0.8'
+            // Preserve the transitive runtime versions audited in the notice bundle.
+            install 'cffi==1.17.1'
+            install 'pycparser==3.12'
+            install 'chaquopy-libffi==3.3'
+        }
     }
 }
 dependencies {
@@ -37,3 +43,40 @@ tasks.register('packageBackend', Zip) {
     reproducibleFileOrder = true
 }
 tasks.named('preBuild').configure { dependsOn 'packageBackend' }
+
+// Licensing and source fingerprints are packaged without changing upstream assets.
+def companionRoot = rootProject.projectDir.parentFile
+def noticeAssets = layout.buildDirectory.dir('generated/licenseAssets')
+def sourceAssets = layout.buildDirectory.dir('generated/sourceAssets')
+android.sourceSets.main.assets.srcDir noticeAssets
+android.sourceSets.main.assets.srcDir sourceAssets
+
+tasks.register('packageLicenseNotices', Sync) {
+    from(companionRoot) {
+        include 'LICENSE', 'NOTICE', 'THIRD-PARTY.md', 'LICENSING.md', 'licenses/**'
+    }
+    into noticeAssets.map { it.dir('license-notices') }
+}
+tasks.register('generateSourceManifest') {
+    outputs.upToDateWhen { false }
+    doLast {
+        def files = fileTree(companionRoot) {
+            include 'android/app/src/main/**', 'android/*.gradle', 'android/gradle.properties'
+            include 'android/gradle/**', 'android/gradlew', 'android/gradlew.bat', 'vendor/upstream/**'
+            include 'LICENSE', 'NOTICE', 'THIRD-PARTY.md', 'LICENSING.md', 'licenses/**'
+            exclude '**/__pycache__/**', '**/*.pyc', '**/logs/**', '**/enrollments/**'
+        }
+        def hashes = new TreeMap<String, String>()
+        files.files.each { f ->
+            def path = companionRoot.toPath().relativize(f.toPath()).toString().replace('\\', '/')
+            hashes[path] = java.security.MessageDigest.getInstance('SHA-256').digest(f.bytes).encodeHex().toString()
+        }
+        def target = sourceAssets.get().file('source-manifest.json').asFile
+        target.parentFile.mkdirs()
+        target.text = groovy.json.JsonOutput.prettyPrint(groovy.json.JsonOutput.toJson([
+            format: 1, versionName: android.defaultConfig.versionName,
+            versionCode: android.defaultConfig.versionCode, files: hashes
+        ]))
+    }
+}
+tasks.named('preBuild').configure { dependsOn 'packageLicenseNotices', 'generateSourceManifest' }

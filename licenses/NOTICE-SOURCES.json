@@ -1,0 +1,128 @@
+{
+  "apk_sha256": "e4c5f53a15dd0b83572441c6290048551a83402918888760c3f73342a132291f",
+  "python_packages": {
+    "pyelftools": "0.26",
+    "setuptools": "68.2.2",
+    "cffi": "1.17.1",
+    "chaquopy-libffi": "3.3",
+    "cryptography": "42.0.8",
+    "pycparser": "3.12"
+  },
+  "notices": [
+    {
+      "path": "licenses/chaquopy-17.2.0/LICENSE.txt",
+      "source": "https://raw.githubusercontent.com/chaquo/chaquopy/17.2.0/LICENSE.txt",
+      "sha256": "345a9fdfeed355d37b18569ef277ba56eb0ab7c0b17a08a90163ce8d33d2b862"
+    },
+    {
+      "path": "licenses/python-3.13.16/LICENSE",
+      "source": "https://raw.githubusercontent.com/python/cpython/v3.13.16/LICENSE",
+      "sha256": "78b12c3a81360b357002334f0e70ea0e92eebf7a9b358805c03c48484945f3bb"
+    },
+    {
+      "path": "licenses/python-3.13.16/THIRD-PARTY-LICENSES.rst",
+      "source": "https://raw.githubusercontent.com/python/cpython/v3.13.16/Doc/license.rst",
+      "sha256": "952ac05720d7f1dcb63589b35eb0931b1442eb250230a4ad31198eddf0ad6abc"
+    },
+    {
+      "path": "licenses/openssl-3.5.9/LICENSE.txt",
+      "source": "https://raw.githubusercontent.com/openssl/openssl/openssl-3.5.9/LICENSE.txt",
+      "sha256": "7d5450cb2d142651b8afa315b5f238efc805dad827d91ba367d8516bc9d49e7a"
+    },
+    {
+      "path": "licenses/gradle-8.9/LICENSE",
+      "source": "https://raw.githubusercontent.com/gradle/gradle/v8.9.0/LICENSE",
+      "sha256": "9536d88ea948603d18e232a13f5958d67807cd80828036b082bff171d2cf0703"
+    },
+    {
+      "path": "licenses/gradle-8.9/NOTICE",
+      "source": "Gradle 8.9 distribution NOTICE",
+      "sha256": "c2de5fd9adc7ccc4e1382a0e1f38ec6e14f8ca6e28d3c20289fe80353b019aa1"
+    },
+    {
+      "path": "licenses/jsch-2.28.8/LICENSE.JZlib.txt",
+      "source": "Maven com.github.mwiede:jsch:2.28.8!META-INF/LICENSE.JZlib.txt",
+      "sha256": "9aa93e9bc58ae423a9e6476f608ee8f46063f5679e3bac0bc55f2f4b10d243ee"
+    },
+    {
+      "path": "licenses/jsch-2.28.8/LICENSE.jBCrypt.txt",
+      "source": "Maven com.github.mwiede:jsch:2.28.8!META-INF/LICENSE.jBCrypt.txt",
+      "sha256": "a85927641ed1c8b95a5cef79b127b2392d80e0aa9d8e2d6f3b7b7401c5396af9"
+    },
+    {
+      "path": "licenses/jsch-2.28.8/LICENSE.txt",
+      "source": "Maven com.github.mwiede:jsch:2.28.8!META-INF/LICENSE.txt",
+      "sha256": "9c3537ab0b485b391b887b95fdff761de3dd3273a6931e8a1942dde4d2093cc5"
+    },
+    {
+      "path": "licenses/bcprov-jdk18on-1.87/LICENSE.md",
+      "source": "Maven org.bouncycastle:bcprov-jdk18on:1.87!META-INF/LICENSE.md",
+      "sha256": "0e01f1549c9022f406392ac2947d32223b7c2e977d21ea2f8c182fdeb4dae5fd"
+    },
+    {
+      "path": "licenses/android-python/java/_vendor/pyelftools-0.26.dist-info/LICENSE.txt",
+      "source": "v0.9.0 APK assets/chaquopy/bootstrap.imy!java/_vendor/pyelftools-0.26.dist-info/LICENSE.txt",
+      "sha256": "ae18bf4cb82f92af7547259177bc28bc48e4fc732518bcedfe690226288d3445"
+    },
+    {
+      "path": "licenses/android-python/setuptools-68.2.2.dist-info/LICENSE",
+      "source": "v0.9.0 APK assets/chaquopy/bootstrap.imy!setuptools-68.2.2.dist-info/LICENSE",
+      "sha256": "86da0f01aeae46348a3c3d465195dc1ceccde79f79e87769a64b8da04b2a4741"
+    },
+    {
+      "path": "licenses/android-python/cffi-1.17.1.dist-info/LICENSE",
+      "source": "v0.9.0 APK assets/chaquopy/requirements-common.imy!cffi-1.17.1.dist-info/LICENSE",
+      "sha256": "04b80f5b077bbed68808cfebadeb5e3523f2a8c9a96495c587bd96df1eac2a33"
+    },
+    {
+      "path": "licenses/android-python/chaquopy_libffi-3.3.dist-info/LICENSE",
+      "source": "v0.9.0 APK assets/chaquopy/requirements-common.imy!chaquopy_libffi-3.3.dist-info/LICENSE",
+      "sha256": "deaf3a42effb551a5b140fa9afefed183a27f1341c6d1bf430d106a5e6931fc0"
+    },
+    {
+      "path": "licenses/android-python/chaquopy_libffi-3.3.dist-info/LICENSE-BUILDTOOLS",
+      "source": "v0.9.0 APK assets/chaquopy/requirements-common.imy!chaquopy_libffi-3.3.dist-info/LICENSE-BUILDTOOLS",
+      "sha256": "e67978cd18816c0cb7d29aaaacde7b7447402c2fb321a051698890a8eaedda94"
+    },
+    {
+      "path": "licenses/android-python/cryptography-42.0.8.dist-info/LICENSE",
+      "source": "v0.9.0 APK assets/chaquopy/requirements-common.imy!cryptography-42.0.8.dist-info/LICENSE",
+      "sha256": "3e0c7c091a948b82533ba98fd7cbb40432d6f1a9acbf85f5922d2f99a93ae6bb"
+    },
+    {
+      "path": "licenses/android-python/cryptography-42.0.8.dist-info/LICENSE.APACHE",
+      "source": "v0.9.0 APK assets/chaquopy/requirements-common.imy!cryptography-42.0.8.dist-info/LICENSE.APACHE",
+      "sha256": "aac73b3148f6d1d7111dbca32099f68d26c644c6813ae1e4f05f6579aa2663fe"
+    },
+    {
+      "path": "licenses/android-python/cryptography-42.0.8.dist-info/LICENSE.BSD",
+      "source": "v0.9.0 APK assets/chaquopy/requirements-common.imy!cryptography-42.0.8.dist-info/LICENSE.BSD",
+      "sha256": "602c4c7482de6479dd2e9793cda275e5e63d773dacd1eca689232ab7008fb4fb"
+    },
+    {
+      "path": "licenses/android-python/cryptography-42.0.8.dist-info/licenses/LICENSE",
+      "source": "v0.9.0 APK assets/chaquopy/requirements-common.imy!cryptography-42.0.8.dist-info/licenses/LICENSE",
+      "sha256": "3e0c7c091a948b82533ba98fd7cbb40432d6f1a9acbf85f5922d2f99a93ae6bb"
+    },
+    {
+      "path": "licenses/android-python/cryptography-42.0.8.dist-info/licenses/LICENSE.APACHE",
+      "source": "v0.9.0 APK assets/chaquopy/requirements-common.imy!cryptography-42.0.8.dist-info/licenses/LICENSE.APACHE",
+      "sha256": "aac73b3148f6d1d7111dbca32099f68d26c644c6813ae1e4f05f6579aa2663fe"
+    },
+    {
+      "path": "licenses/android-python/cryptography-42.0.8.dist-info/licenses/LICENSE.BSD",
+      "source": "v0.9.0 APK assets/chaquopy/requirements-common.imy!cryptography-42.0.8.dist-info/licenses/LICENSE.BSD",
+      "sha256": "602c4c7482de6479dd2e9793cda275e5e63d773dacd1eca689232ab7008fb4fb"
+    },
+    {
+      "path": "licenses/android-python/pycparser-3.12.dist-info/licenses/LICENSE",
+      "source": "v0.9.0 APK assets/chaquopy/requirements-common.imy!pycparser-3.12.dist-info/licenses/LICENSE",
+      "sha256": "0a9e78156ae8b96caf1b4f11ac2df424b83de29736f9e757630548a6272fdf90"
+    },
+    {
+      "path": "licenses/UPSTREAM-UNLICENSE.txt",
+      "source": "vendor/upstream/LICENSE, pinned 6d4928e6dca9812e7882318afdd7cba9840c2d62",
+      "sha256": "436a6d536138f203ac333858cff92a568be62797752b3adb94bcaa0f6ffe7ef6"
+    }
+  ]
+}

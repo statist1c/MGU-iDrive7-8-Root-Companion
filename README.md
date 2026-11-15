@@ -4,9 +4,9 @@
 
 An experimental, self-contained **Android version of [idrive7-8-ssh-root](https://github.com/cauliflowermossgrape/idrive7-8-ssh-root)** for BMW MGU iDrive 7/8 head units over USB Ethernet or experimental Wi-Fi ENET.
 
-**v0.9.0 pre-release — local APK built; GitHub publication pending.**
+**v0.9.0 pre-release**
 
-New: Settings → App updates, with daily/manual GitHub checks, optional previews and user-confirmed downloads/installation. See [APP-UPDATES.md](APP-UPDATES.md). The latest published release remains v0.8.0 until v0.9.0 is uploaded.
+New: Settings → App updates, with daily/manual GitHub checks, optional previews and user-confirmed downloads/installation. See [APP-UPDATES.md](APP-UPDATES.md). The v0.9.0 APK and matching source are available from GitHub Releases.
 
 ## Full credits
 
@@ -66,3 +66,16 @@ The upstream default root SSH key is shared. Protect exported keys and keep the 
 Build requirements: JDK 17, Python 3.13 and Android SDK 35. From `android/` run `./gradlew assembleDebug lint` (`gradlew.bat` on Windows).
 
 See the [detailed setup/build guide](docs/BUILD-AND-USAGE.md), [design notes](DESIGN.md), [license](LICENSE) and [third-party notices](THIRD-PARTY.md). This project is not affiliated with BMW.
+
+## License
+
+The maintained Android companion is **GPL-3.0-only**; see [LICENSE](LICENSE) and
+[licensing/source policy](LICENSING.md). The original rooting project in
+`vendor/upstream` retains its **Unlicense**, with full upstream credit preserved.
+Third-party notices and license texts are in [THIRD-PARTY.md](THIRD-PARTY.md) and
+[licenses/](licenses/). BMW branding is excluded from the software-license grant.
+
+Each APK release must include its matching source ZIP, license notices and checksums.
+The original v0.9.0 APK/source are preserved; its licensing supplement adds notices
+without replacing the binary. Future releases use `scripts/prepare_release.py` to
+verify source fingerprints before packaging. No private signing keys are included.

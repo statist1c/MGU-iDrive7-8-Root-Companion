@@ -1,3 +1,4 @@
+# SPDX-License-Identifier: GPL-3.0-only
 """Local runtime/asset checks only: never opens a socket or sends vehicle data."""
 import json
 import sys

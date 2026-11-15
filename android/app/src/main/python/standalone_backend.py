@@ -1,3 +1,4 @@
+# SPDX-License-Identifier: GPL-3.0-only
 """Single-app coordinator. Upstream flash/enrollment bytes remain unchanged."""
 import argparse
 import contextlib
