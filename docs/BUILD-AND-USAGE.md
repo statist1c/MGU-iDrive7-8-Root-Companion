@@ -1,3 +1,5 @@
+Current local build: **v0.9.0 pre-release**, versionName0.9.0 / versionCode7. APK build and emulator checks passed; not yet published. See [App updates](../APP-UPDATES.md). Earlier version details below are historical.
+
 Current release: **v0.8.0 pre-release**, versionCode6, selected adaptive shield icon. Use GitHub tag v0.8.0 and mark as a pre-release. Earlier release notes below are historical.
 
 Current release: **v0.7.0 pre-release**, versionCode5. Settings action buttons now match the main app in both themes. Use tag v0.7.0 and mark as a pre-release. Older version instructions below are historical.

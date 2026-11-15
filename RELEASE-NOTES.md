@@ -1,14 +1,11 @@
-# v0.8.0 — Pre-release
+# v0.9.0 — Pre-release
 
-- Replaced the launcher icon with the user-selected shield/microchip design, unlocked terminal, MGU lettering and BMW roundel.
-- Added Android adaptive-icon packaging with safe margins for round and rounded-square launcher masks.
-- Retained v0.7.0 settings button styling, themes, USB-C Ethernet and experimental Wi-Fi ENET profiles.
-- VersionCode6 / versionName0.8.0-pre-release, existing package and signing identity retained.
+- Added GitHub app updater matching MGU Store Installer: automatic daily checks, manual Check now, optional previews, update notifications and release-note review.
+- Downloads and Android installation require user action. APK size/hash, app package, version and signing certificate must match.
+- Added matching update controls to Settings and defer checks/download/install during vehicle work.
+- Retained both USB-C Ethernet and experimental Wi-Fi ENET, existing themes, icon and vehicle authorization safeguards.
+- VersionName0.9.0 / versionCode7; same package and signing identity.
 
-No connectivity or rooting workflow changes. No physical phone, adapter or real BMW head unit validation is claimed. Wi-Fi interoperability and SSH forwarding remain unverified.
+APK build, lint, offline policy tests and emulator checks passed. Live GitHub checks and daily-job registration were verified; a complete future-release APK download/install flow remains untested. GitHub publication is pending. v0.8.0 users must manually install the first updater-enabled APK.
 
-Full credit for the original rooting work: https://github.com/cauliflowermossgrape/idrive7-8-ssh-root . This is an independent Android adaptation.
-
-BMW name and roundel are third-party trademarks; no BMW endorsement or permission is claimed. Their inclusion does not grant trademark rights, and the project license does not license them.
-
-Publish with GitHub tag v0.8.0 and Set as a pre-release enabled.
+No physical phone, adapter or real BMW head-unit testing is claimed. Full credits for the original rooting work remain with https://github.com/cauliflowermossgrape/idrive7-8-ssh-root . This is an independent Android adaptation.

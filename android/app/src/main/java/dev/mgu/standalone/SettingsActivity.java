@@ -6,6 +6,11 @@ import android.provider.Settings;
 import android.view.*;
 import android.widget.*;
 public final class SettingsActivity extends Activity {
+ boolean updateBusy; TextView updateStatus; private LinearLayout updateBody;
+ final android.os.Handler updateHandler=new android.os.Handler(android.os.Looper.getMainLooper());
+ final java.util.concurrent.ExecutorService updateWorker=java.util.concurrent.Executors.newSingleThreadExecutor();
+ private final Runnable updateRefresh=new Runnable(){public void run(){if(updateStatus!=null)updateStatus.setText(AppUpdater.prefs(SettingsActivity.this).getString("status","Check GitHub releases for updates."));updateHandler.postDelayed(this,1000);}};
+
  @Override public void onCreate(Bundle state){
   boolean dark=AppSettings.dark(this);setTheme(dark?R.style.Theme_RootCompanion_Dark:R.style.Theme_RootCompanion);super.onCreate(state);
   getWindow().addFlags(WindowManager.LayoutParams.FLAG_SECURE);
@@ -16,6 +21,7 @@ public final class SettingsActivity extends Activity {
   scroll.setOnApplyWindowInsetsListener((v,insets)->{if(android.os.Build.VERSION.SDK_INT>=30){android.graphics.Insets bars=insets.getInsets(WindowInsets.Type.systemBars()|WindowInsets.Type.displayCutout());scroll.setPadding(bars.left,bars.top,bars.right,bars.bottom);}else scroll.setPadding(insets.getSystemWindowInsetLeft(),insets.getSystemWindowInsetTop(),insets.getSystemWindowInsetRight(),insets.getSystemWindowInsetBottom());return insets;});scroll.requestApplyInsets();
   TextView title=new TextView(this);title.setText("App settings");title.setTextSize(26);title.setTextColor(ink);box.addView(title);
   Button back=new Button(this);back.setText("Done");styleButton(back,dark,true);box.addView(back);back.setOnClickListener(v->finish());
+  AppUpdateUi.attach(this,box);
   TextView label=new TextView(this);label.setText("Appearance");label.setTextSize(20);label.setTextColor(ink);box.addView(label);
   RadioGroup themes=new RadioGroup(this);box.addView(themes);styleGroup(themes,dark,pad);String[] keys={"auto","light","dark"},names={"Auto · follow phone theme","Light","Dark"};
   for(int i=0;i<3;i++){RadioButton r=new RadioButton(this);r.setId(View.generateViewId());r.setText(names[i]);themes.addView(r);r.setChecked(AppSettings.prefs(this).getString("theme","auto").equals(keys[i]));final String key=keys[i];r.setOnClickListener(v->{AppSettings.prefs(this).edit().putString("theme",key).apply();recreate();});}
@@ -28,6 +34,14 @@ public final class SettingsActivity extends Activity {
   back.setOnClickListener(v->{String ip=ssh.getText().toString().trim();if(!ip.isEmpty()&&!EthernetRoute.local(ip)){error.setText("Use a private or usable link-local IPv4 address.");return;}if(!BackendService.running)AppSettings.prefs(this).edit().putString("ssh_override",ip).apply();finish();});
   Button wifi=new Button(this);wifi.setText("Open Android Wi-Fi settings");styleButton(wifi,dark,false);box.addView(wifi);wifi.setOnClickListener(v->startActivity(new Intent(Settings.ACTION_WIFI_SETTINGS)));
  }
+ void updateHeading(LinearLayout parent,String title){updateBody=new LinearLayout(this);updateBody.setOrientation(LinearLayout.VERTICAL);int pad=dp(16);updateBody.setPadding(pad,pad,pad,pad);android.graphics.drawable.GradientDrawable bg=new android.graphics.drawable.GradientDrawable();bg.setColor(AppSettings.dark(this)?0xff1e2330:0xffefedf5);bg.setCornerRadius(dp(22));updateBody.setBackground(bg);LinearLayout.LayoutParams params=new LinearLayout.LayoutParams(-1,-2);params.setMargins(0,dp(12),0,dp(20));parent.addView(updateBody,params);TextView label=updateLabel(title);label.setTextSize(20);}
+ TextView updateLabel(String text){TextView label=new TextView(this);label.setText(text);label.setTextSize(14);label.setTextColor(AppSettings.dark(this)?0xffeef1fa:0xff1d1c22);label.setPadding(0,0,0,dp(10));updateBody.addView(label);return label;}
+ CheckBox updateCheck(String text,boolean checked){CheckBox box=new CheckBox(this);box.setText(text);box.setChecked(checked);updateBody.addView(box);return box;}
+ void updateButton(String title,boolean primary,Runnable action){Button button=new Button(this);button.setText(title);styleButton(button,AppSettings.dark(this),primary);updateBody.addView(button);button.setOnClickListener(v->action.run());}
+ void message(String text){if(!isDestroyed())new AlertDialog.Builder(this).setTitle("App updates").setMessage(text).setPositiveButton("OK",null).show();}
+ @Override protected void onResume(){super.onResume();updateHandler.post(updateRefresh);AppUpdater.schedule(this);if(AppUpdater.prefs(this).getLong("download_id",-1)>=0)AppUpdater.scheduleValidation(this);}
+ @Override protected void onPause(){updateHandler.removeCallbacks(updateRefresh);super.onPause();}
+ @Override protected void onDestroy(){updateHandler.removeCallbacksAndMessages(null);updateWorker.shutdown();super.onDestroy();}
  private int dp(float value){return Math.round(value*getResources().getDisplayMetrics().density);}
  private android.graphics.drawable.GradientDrawable buttonShape(int fill,int stroke){android.graphics.drawable.GradientDrawable d=new android.graphics.drawable.GradientDrawable();d.setColor(fill);d.setCornerRadius(dp(24));if(stroke!=0)d.setStroke(dp(1),stroke);return d;}
  private void styleButton(Button b,boolean dark,boolean solid){

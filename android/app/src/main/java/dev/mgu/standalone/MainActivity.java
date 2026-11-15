@@ -40,6 +40,7 @@ public final class MainActivity extends Activity {
     private final TextView[] stepButtons=new TextView[4],navLabels=new TextView[4];
     private final View[] progressSegments=new View[4],navPills=new View[4];
     private final Icon[] navIcons=new Icon[4];
+    static volatile boolean phoneNetworkBusy;
     private boolean configuring,onlyIssues,clearedView;
     private Boolean busyShown;
     private String logs="",lastResult="",lastSnapshot="";
@@ -181,7 +182,7 @@ public final class MainActivity extends Activity {
         card(parent,"Connection security"); legacy=new CheckBox(this); legacy.setText("Allow legacy RSA/SHA1 for this operation"); legacy.setTextSize(14); legacy.setTextColor(INK); legacy.setButtonTintList(ColorStateList.valueOf(BLUE)); body.addView(legacy); label("Advanced opt-in only. No automatic algorithm downgrade is used. Investigate an unexpected changed host key; do not reflash just to repair trust.",13,MUTED); secondary("Review / reset local SSH host key",()->resetHostPin());
         card(parent,"Phone Ethernet · root optional"); label("Only needed if Android settings cannot provide a working wired address and route. Requires a phone that is already rooted and your explicit approval.",14,MUTED); secondary("Configure wired IP using root",()->rootDialog(false)); secondary("Remove this app's rooted network setup",()->rootDialog(true)); secondary("Open battery settings",()->startActivity(new Intent(Settings.ACTION_IGNORE_BATTERY_OPTIMIZATION_SETTINGS)));
         card(parent,"Advanced key repair"); label("Fix refused key re-flashes the head unit and carries the same coding, Digital Key and damage risks as a normal flash. Use it only for the documented key-refusal case.",14,RED); danger("Fix refusing key — re-flash",()->prepare("fix-key"));
-        card(parent,"About this app"); label(APP_NAME+"\nv0.8.0 pre-release · runs entirely on this phone",14,MUTED); secondary("Safety & limitations",()->showSafety());
+        card(parent,"About this app"); label(APP_NAME+"\nv0.9.0 pre-release · runs entirely on this phone",14,MUTED); secondary("Safety & limitations",()->showSafety());
     }
     private void safetyCard(LinearLayout parent) { card(parent,"Experimental · read before changes"); label("Not tested on a physical phone or BMW head unit. Flashing can erase coding and Digital Keys or damage the module. The upstream root login key is shared.",13,MUTED); secondary("Safety information",()->showSafety()); }
     private void showSafety() {
@@ -304,11 +305,11 @@ public final class MainActivity extends Activity {
                 String name=iface.getText().toString().trim(), address=ip.getText().toString().trim();
                 String preview=RootEthernet.preview(name,address,remove);
                 new AlertDialog.Builder(this).setTitle("Confirm phone networking change").setMessage(preview).setNegativeButton("Cancel",null).setPositiveButton("Apply using root",(d2,w2)->{
-                    configuring=true; status.setText("Waiting for root network setup…");
+                    configuring=true; phoneNetworkBusy=true; status.setText("Waiting for root network setup…");
                     background.execute(()->{ String message;
                         try { message=RootEthernet.apply(this,name,address,remove); }
                         catch(Exception e) { message="Network setup stopped: "+e.getMessage(); }
-                        String finalMessage=message; handler.post(()->{ configuring=false; if(!remove) source.setText(address); status.setText(finalMessage); });
+                        String finalMessage=message; handler.post(()->{ configuring=false; phoneNetworkBusy=false; if(!remove) source.setText(address); status.setText(finalMessage); });
                     });
                 }).show();
             } catch(Exception e) { status.setText(e.getMessage()); }
@@ -328,18 +329,18 @@ public final class MainActivity extends Activity {
             catch(Exception e) { status.setText(e.getMessage()); }
         }
         if(request==44 && !BackendService.running && !configuring) {
-            configuring=true;
+            configuring=true; phoneNetworkBusy=true;
             background.execute(()->{
                 String message="Private backup saved; protect its keys.";
                 try(OutputStream out=getContentResolver().openOutputStream(data.getData())) {
                     if(out==null) throw new IOException("Destination unavailable");
                     try(ZipOutputStream zip=new ZipOutputStream(out)) { zipTree(zip,getFilesDir(),getFilesDir()); }
                 } catch(Exception e) { message="Backup failed: "+e.getMessage(); }
-                String text=message; handler.post(()->{ configuring=false; status.setText(text); });
+                String text=message; handler.post(()->{ configuring=false; phoneNetworkBusy=false; status.setText(text); });
             });
         }
     }
-    @Override protected void onResume() { super.onResume(); if(!settingsSignature.equals(AppSettings.signature(this))){recreate();return;}handler.post(refresh); }
+    @Override protected void onResume() { super.onResume(); if(!settingsSignature.equals(AppSettings.signature(this))){recreate();return;}handler.post(refresh); AppUpdater.schedule(this); if(AppUpdater.prefs(this).getBoolean("automatic",true) && System.currentTimeMillis()-AppUpdater.prefs(this).getLong("last_check",0)>24*60*60*1000L && !AppUpdater.vehicleBusy()) AppUpdater.checkInBackground(this); }
     @Override protected void onPause() { handler.removeCallbacks(refresh);AppSettings.prefs(this).edit().putString(profile+"_source",source.getText().toString()).putString(profile+"_gateway",gateway.getText().toString()).apply(); super.onPause(); }
     @Override protected void onDestroy() { handler.removeCallbacks(refresh); background.shutdown(); super.onDestroy(); }
     @Override public void onBackPressed() {

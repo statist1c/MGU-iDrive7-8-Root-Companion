@@ -1,8 +1,12 @@
 # MGU iDrive7-8 Root Companion
 
+<img src="docs/images/icon-v0.8.0.png" alt="MGU Root Companion shield app icon" width="128" />
+
 An experimental, self-contained **Android version of [idrive7-8-ssh-root](https://github.com/cauliflowermossgrape/idrive7-8-ssh-root)** for BMW MGU iDrive 7/8 head units over USB Ethernet or experimental Wi-Fi ENET.
 
-**v0.8.0 pre-release**
+**v0.9.0 pre-release — local APK built; GitHub publication pending.**
+
+New: Settings → App updates, with daily/manual GitHub checks, optional previews and user-confirmed downloads/installation. See [APP-UPDATES.md](APP-UPDATES.md). The latest published release remains v0.8.0 until v0.9.0 is uploaded.
 
 ## Full credits
 
@@ -16,13 +20,14 @@ This project is an Android adaptation of the author's work, adding a phone inter
 - **Monitor:** live status, logs, issue filtering and log export.
 - **Backups:** private key/data export and read-only coding dumps.
 - **SSH:** repair, persistence and access-management controls.
+- **App updates:** GitHub checks and verified, user-confirmed app updates.
 - **Settings:** Light, Dark or Auto appearance; separate USB/Wi-Fi connection profiles.
 - **Wi-Fi ENET (experimental):** VXSCAN ENET Wi-Fi/USB profile, including the user-reported MHD ENET_4472 address range; selected-network routing and optional SSH override.
 - Runs entirely on the phone: **no PC or Termux required at runtime**.
 
 <img src="docs/images/light.png" alt="Light appearance — emulator preview" width="260" /> <img src="docs/images/dark.png" alt="Dark appearance — emulator preview" width="260" />
 
-<img src="docs/images/settings.png" alt="App settings — emulator-rendered preview" width="260" />
+<img src="docs/images/updates-v0.9.0-light.png" alt="App update settings in Light mode — emulator preview" width="260" /> <img src="docs/images/updates-v0.9.0-dark.png" alt="App update settings in Dark mode — emulator preview" width="260" />
 
 ## Requirements
 
@@ -41,7 +46,6 @@ This project is an Android adaptation of the author's work, adding a phone inter
 
 See [adapter setup and identity limitations](docs/WIFI-ADAPTER.md). Standard USB-C Ethernet support remains available. The app uses the selected shield/chip icon with MGU lettering and a BMW roundel. This independent project is not affiliated with or endorsed by BMW; third-party marks are not covered by the project source license.
 
-<img src="docs/images/icon.png" alt="BMW MGU companion icon" width="108" />
 
 ## Wi-Fi ENET limitations
 

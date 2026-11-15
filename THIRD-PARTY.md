@@ -18,3 +18,7 @@ Dependency versions are source configuration choices, not a successful build or 
 ## v0.8.0 launcher artwork
 
 Shield icon generated for this project at the user’s request. The embedded BMW roundel/name remain third-party marks of BMW AG; no endorsement, permission or trademark license is claimed. The project source license does not grant rights to those marks.
+
+## v0.9.0 updater source
+
+AppUpdater, AppUpdateUi, ReleaseVersion, UpdateJob, UpdateValidationJob, UpdateDownloadReceiver and UpdateFileProvider are adapted from the user’s [MGU Store Installer](https://github.com/statist1c/MGU-Store-Installer) project, whose root license is GPL-3.0. The license is retained in licenses/MGU-Store-Installer-GPL-3.0.txt. Those adapted files are not represented as Unlicense code; the existing root/backend license does not replace their GPL terms. GPL requirements must be preserved when distributing a combined application. Original upstream rooting code/assets remain unchanged under their existing license.
