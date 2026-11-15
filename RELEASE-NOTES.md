@@ -1,3 +1,12 @@
+# v0.9.1 — Pre-release
+
+- Included GPLv3, upstream credits and dependency license notices inside the APK.
+- Added source fingerprints and matching source release packaging.
+- Updated the app version to 0.9.1 (version code 8).
+- Existing USB Ethernet, Wi-Fi ENET, updater and icon retained.
+
+No real BMW head unit testing is claimed.
+
 # v0.9.0 — Pre-release
 
 - Added GitHub app updater matching MGU Store Installer: automatic daily checks, manual Check now, optional previews, update notifications and release-note review.
