@@ -1,3 +1,7 @@
+# ⚠️ WARNING: THIS APP IS UNTESTED ON A REAL BMW HEAD UNIT
+
+**EXPERIMENTAL PRE-RELEASE — USE AT YOUR OWN RISK. EMULATOR CHECKS DO NOT CONFIRM THAT ROOTING WORKS ON A REAL VEHICLE.**
+
 # MGU iDrive7-8 Root Companion
 
 <img src="docs/images/icon-v0.8.0.png" alt="MGU Root Companion shield app icon" width="128" />
