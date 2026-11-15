@@ -32,7 +32,10 @@ or replaced. Their SHA256 values are:
 Both files are at:
 https://github.com/statist1c/MGU-iDrive7-8-Root-Companion/releases/tag/v0.9.0
 
-The license-supplement ZIP accompanies those existing files. It supplies the
+The license-supplement ZIP is available alongside those download links in the README:
+https://github.com/statist1c/MGU-iDrive7-8-Root-Companion/raw/refs/heads/main/release-notices/MGU-iDrive7-8-Root-Companion-v0.9.0-licenses.zip
+
+It supplements those existing files. It supplies the
 current GPLv3 distribution notice and dependency texts without altering the
 original APK or source. The repository’s newer license-packaging/source-stamp
 build rules apply to future builds; they are not represented as part of the

@@ -79,3 +79,14 @@ Each APK release must include its matching source ZIP, license notices and check
 The original v0.9.0 APK/source are preserved; its licensing supplement adds notices
 without replacing the binary. Future releases use `scripts/prepare_release.py` to
 verify source fingerprints before packaging. No private signing keys are included.
+
+### v0.9.0 release files
+
+- [Published APK](https://github.com/statist1c/MGU-iDrive7-8-Root-Companion/releases/download/v0.9.0/MGU-iDrive7-8-Root-Companion-v0.9.0-pre-release.apk)
+- [Matching original source ZIP](https://github.com/statist1c/MGU-iDrive7-8-Root-Companion/releases/download/v0.9.0/MGU-iDrive7-8-Root-Companion-v0.9.0-source.zip)
+- [GPLv3 and dependency license supplement](release-notices/MGU-iDrive7-8-Root-Companion-v0.9.0-licenses.zip)
+- [License supplement SHA256](release-notices/MGU-iDrive7-8-Root-Companion-v0.9.0-licenses-SHA256.txt)
+
+The license supplement is hosted in this repository; the published APK and its
+original matching source ZIP have not been replaced. Read [LICENSING.md](LICENSING.md)
+for the current distribution terms and future release-source procedure.
